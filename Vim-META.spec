@@ -1,4 +1,7 @@
 
+
+'META' file
+
 =author Cornelius (cornelius.howl@gmail.com)
 =version 0.1
 =version plugin/new_plugin.vim
@@ -11,4 +14,3 @@
     svn: http://...../
     svn: svn+ssh://..../..../
     darcs: .....
-

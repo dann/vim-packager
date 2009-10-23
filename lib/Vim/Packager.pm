@@ -20,7 +20,6 @@ our $VERSION = '0.01';
     use Vim::Packager;
 
     my $packager = VIM::Packager->create(
-        name => '',
 
     );
 
