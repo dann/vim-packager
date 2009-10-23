@@ -5,6 +5,11 @@ all_from 'lib/Vim/Packager.pm';
 author   q{Cornelius <cornelius.howl@gmail.com>};
 license  'perl';
 
+
+requires 
+    'App::CLI' => 0,
+    'Getopt::Long' => 0;
+    
 build_requires 'Test::More';
 
 auto_install;
