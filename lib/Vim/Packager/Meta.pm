@@ -7,6 +7,7 @@ my @possible_filename = qw(
     MEAT.yml
 );
 
+sub new { bless {} , shift }
 
 sub get_meta_file {
     for my $f ( @possible_filename ) {
@@ -16,7 +17,7 @@ sub get_meta_file {
 }
 
 sub read {
-    my $class = shift;
+    my $new = shift;
     my $file = $class->get_meta_file();
 
 
