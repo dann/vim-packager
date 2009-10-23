@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-Vim::Packager -
+Vim::Packager - 
 
 =head1 VERSION
 
@@ -47,9 +47,6 @@ Cornelius, C<< <cornelius.howl at gmail.com> >>
 Please report any bugs or feature requests to C<bug-vim-packager at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Vim-Packager>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
-
 
 =head1 SUPPORT
 

@@ -121,6 +121,8 @@ VIMSCRIPT DOCUMENT FORMAT
 
     VARIABLE DOC FORMAT:
 
+        "=[scope]:Var
+
         "=g:Var
         "
         "  g:somehting
@@ -156,6 +158,18 @@ VIMSCRIPT DOCUMENT FORMAT
         "   
         "   @return: 
         "==
+
+    COMMANDS DOC FORMAT:
+
+        "=COMMANDS
+        "   
+        "    :ReloadCPAN
+        "         description
+        "
+        "    :AutoComplPopEnable
+        "
+        "==
+
 
 INSTALLATION
 
