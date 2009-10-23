@@ -42,16 +42,36 @@ sub read {
     die 'there is no meta file' unless -e $file;
 
     open my $fh , "<" , $file ;
-    while( <$fh ) {
-        if ( /^=(\w+)/ ) {
-            my $dispatch = '_' . $1;
-            $class->$dispatch( $fh , $_ );
-        }
-    }
+    my @lines = <$fh>;
     close $fh;
 
+    my $idx = 0;
+    for ( @lines ) {
+        if ( /^=(\w+)/ ) {
+            my $dispatch = '_' . $1;
+            $class->$dispatch( $_ , \@lines , $idx );
+        }
+        $idx++;
+    }
+}
+
+sub _name {
+    my ($self,$cur,$lines,$idx) = @_;
 
 }
+
+sub _author { }
+sub _version { }
+sub _type { }
+sub _dependency { }
+sub _script { }
+sub _repository { }
+
+# some alias
+
+
+
+
 
 
 1;
