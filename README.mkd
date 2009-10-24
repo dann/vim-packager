@@ -5,28 +5,28 @@ to create a new plugin:
 
     $ vim-packager create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
 
-        new_plugin/
-        new_plugin/plugin/
-        new_plugin/doc/
-        new_plugin/META
+    new_plugin/
+    new_plugin/plugin/
+    new_plugin/doc/
+    new_plugin/META
 
-    fill your 'META' file
+fill your 'META' file
 
-        =name       new_plugin
-        =author     Cornelius (cornelius.howl@gmail.com)
-        =version    0.1
-        =version    plugin/new_plugin.vim   # extract version infomation from this file
-        =type       syntax
-        =vim_version >= 7.0
-        =dependency
-            autocomplpop.vim > 0.3
-            rainbow.vim      >= 1.2
+    =name       new_plugin
+    =author     Cornelius (cornelius.howl@gmail.com)
+    =version    0.1
+    =version    plugin/new_plugin.vim   # extract version infomation from this file
+    =type       syntax
+    =vim_version >= 7.0
+    =dependency
+        autocomplpop.vim > 0.3
+        rainbow.vim      >= 1.2
 
-        =script
-            bin/parser
-            bin/template_generator
+    =script
+        bin/parser
+        bin/template_generator
 
-        =repository git://....../
+    =repository git://....../
 
     $ vim-package manifest
 
@@ -34,13 +34,13 @@ to create a new plugin:
             plugin/...
             plugin/...
 
-    update your 'MANIFEST' file
+then update your 'MANIFEST' file
 
     $ vim-package build
 
     $ vim-package dist
 
-        new_plugin-0.1.tar.gz  # is out
+    new_plugin-0.1.tar.gz  # is out
 
     $ vim-package upload new_plugin-0.1.tar.gz
 
@@ -56,13 +56,14 @@ Vim::Packager PACKAGE INSTALLATION
 
     $ vim-packager build
 
-the build action
-    read 'meta' file , and convert meta into meta.yml
-    or read 'meta.yml' file
-read 'manifest' file list
+the build action, which reads 'META' file , and convert meta information into META.yml
+    or read 'META.yml' file
+
+then read 'manifest' file list
 then generate Makefile
 
     $ sudo make install
+
 
 FOR AN EXISTED VIM DISTRIBUTION
 ===============================
@@ -92,9 +93,9 @@ dependency (user should define it by self)
 
 your should update your package information from META file
 
-        $ vim-packager build 
+    $ vim-packager build 
 
-        $ make install
+    $ make install
 
 VIMSCRIPT DOCUMENT FORMAT
 =========================
