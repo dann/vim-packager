@@ -14,6 +14,7 @@ VIM::PACKAGER TUTORIAL
         =version    0.1
         =version    plugin/new_plugin.vim   # extract version infomation from this file
         =type       syntax
+        =vim_version >= 7.0
         =dependency
             autocomplpop.vim > 0.3
             rainbow.vim      >= 1.2

@@ -56,7 +56,7 @@ sub read {
     my $idx = 0;
     for ( @lines ) {
         if ( /^=(\w+)/ ) {
-            my $dispatch = '_' . $1;
+            my $dispatch = '__' . $1;
             $class->$dispatch( $_ , \@lines , $idx );
         }
         $idx++;
@@ -73,27 +73,27 @@ sub _get_value {
     return $v;
 }
 
-sub _name {
+sub __name {
     my ($self,$cur,$lines,$idx) = @_;
     $self->meta->{name} = _get_value( $cur );
 }
 
-sub _author {
+sub __author {
     my ($self,$cur,$lines,$idx) = @_;
     $self->meta->{author} = _get_value( $cur );
 }
 
-sub _version {
+sub __version {
     my ($self,$cur,$lines,$idx) = @_;
     $self->meta->{version} = _get_value( $cur );
 }
 
-sub _type {
+sub __type {
     my ($self,$cur,$lines,$idx) = @_;
     $self->meta->{type} = _get_value( $cur );
 }
 
-sub _dependency {
+sub __dependency {
     my ($self,$cur,$lines,$idx) = @_;
     $idx++;
     for( $idx ; $idx < @$lines ; $idx ++ ) {
@@ -108,21 +108,22 @@ sub _dependency {
     }
 }
 
-sub _script {
+sub __script {
     my ($self,$cur,$lines,$idx) = @_;
 
 }
 
-sub _repository {
+sub __repository {
     my ($self,$cur,$lines,$idx) = @_;
+
+}
+
+sub __vim_version {
 
 }
 
 # some alias
-
-
-
-
+# ....
 
 
 1;
