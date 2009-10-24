@@ -28,19 +28,10 @@ our $VERSION = '0.01';
 =cut
 
 
-sub new {
-
-}
-
-
-sub init {
-
-}
-
 
 =head1 AUTHOR
 
-Cornelius, C<< <cornelius.howl at gmail.com> >>
+Cornelius(c9s), C<< <cornelius.howl at gmail.com> >>
 
 =head1 BUGS
 

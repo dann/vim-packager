@@ -7,6 +7,7 @@ license  'perl';
 
 
 requires 
+    'YAML' => 0,
     'App::CLI' => 0,
     'Getopt::Long' => 0;
     
