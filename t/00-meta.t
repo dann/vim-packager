@@ -10,7 +10,12 @@ BEGIN {
 
 my $sample =<<END;
 
+# comment
+
 =name       new_plugin
+
+# comment
+
 =author     Cornelius (cornelius.howl\@gmail.com)
 =version    0.1
 =version    plugin/new_plugin.vim   # extract version infomation from this file

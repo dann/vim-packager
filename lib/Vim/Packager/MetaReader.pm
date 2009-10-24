@@ -48,14 +48,13 @@ sub read {
     my $fh = shift;
 
     my @lines = <$fh>;
+    for ( my  $idx = 0 ; $_ = $lines[ $idx ] and $idx < @lines ; $idx ++ ) {
+        next if /^#/;    # skip comment
 
-    my $idx = 0;
-    for ( @lines ) {
         if ( /^=(\w+)/ ) {
             my $dispatch = '__' . $1;
             $class->$dispatch( $_ , \@lines , $idx );
         }
-        $idx++;
     }
 }
 
@@ -95,6 +94,8 @@ sub __dependency {
 
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
+        next if $c =~ /^#/; # skip comment
+
         my ( $name , $op , $version ) = ( $c =~ m{
                     ^
                     ([0-9a-zA-Z._-]+)
