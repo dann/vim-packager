@@ -44,27 +44,18 @@ sub check_manifest {
 }
 
 sub check_vim {
-
-}
-
-
-sub findbin {
-    my $which = shift;
-    my $path  = $ENV{PATH};
-    my @paths = split /:/, $path;
-    for (@paths) {
-        my $bin = $_ . '/' . $which;
-        return $bin if ( -x $bin );
+    my $vim = Vim::Packager::Utils::findbin('vim');
+    unless( $vim ) {
+        study STDOUT;
+        print "It seems you dont have vim installed.";
+        die;
     }
 }
 
-sub find_vim {
-    return $ENV{VIMPATH} || findbin('vim');
-}
-
-
-
 sub check_vim_version {
+    my $vim = Vim::Packager::Utils::findbin('vim');
+    my $version_info = qx($vim --version);
+
 
 
 

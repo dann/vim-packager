@@ -1,0 +1,224 @@
+Vim::Packager ABSTRACT
+=======================
+
+to create a new plugin:
+
+    $ vim-packager create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
+
+        new_plugin/
+        new_plugin/plugin/
+        new_plugin/doc/
+        new_plugin/META
+
+    fill your 'META' file
+
+        =name       new_plugin
+        =author     Cornelius (cornelius.howl@gmail.com)
+        =version    0.1
+        =version    plugin/new_plugin.vim   # extract version infomation from this file
+        =type       syntax
+        =vim_version >= 7.0
+        =dependency
+            autocomplpop.vim > 0.3
+            rainbow.vim      >= 1.2
+
+        =script
+            bin/parser
+            bin/template_generator
+
+        =repository git://....../
+
+    $ vim-package manifest
+
+            plugin/
+            plugin/...
+            plugin/...
+
+    update your 'MANIFEST' file
+
+    $ vim-package build
+
+    $ vim-package dist
+
+        new_plugin-0.1.tar.gz  # is out
+
+    $ vim-package upload new_plugin-0.1.tar.gz
+
+    Uploading...Done
+
+you can also define your '.IGNORE' file
+
+        .git*
+        test-
+
+Vim::Packager PACKAGE INSTALLATION
+==================================
+
+    $ vim-packager build
+
+the build action
+    read 'meta' file , and convert meta into meta.yml
+    or read 'meta.yml' file
+read 'manifest' file list
+then generate Makefile
+
+    $ sudo make install
+
+FOR AN EXISTED VIM DISTRIBUTION
+===============================
+
+    $ cd my_plugin
+
+    $ ls -1
+
+        after/
+        syntax/
+        plugin/
+        doc/
+        README
+
+    $ vim-packager init
+
+which generates
+
+        META
+        MANIFEST
+        .IGNORE
+
+name from parent directory name
+version (should try to parse \*.vim files)
+author  (should try to parse \*.vim files)
+dependency (user should define it by self)
+
+your should update your package information from META file
+
+        $ vim-packager build 
+
+        $ make install
+
+VIMSCRIPT DOCUMENT FORMAT
+=========================
+
+BASIC REQUIREMENT
+-----------------
+
+    "=NAME your name
+    "
+    "=AUTHOR Cornelius
+    "
+    "=AUTHORS
+    "   Kana
+    "   Cornelius 
+    "
+    "=VERSION 0.2
+    "
+    "=DESCRIPTION
+    "
+    "   stories....
+    "   more ...
+    "
+    "=LICENSE MIT
+    "
+    "=REPOSITORY http://github.com/c9s/p5-vim-packager
+    "
+    "=REVISION r4356
+    "
+    "=REVISION da743bd63d7afa1cc8e054615c0208c1a871b0e2
+
+VARIABLE DOC FORMAT
+----------------------
+
+    "=[scope]:Var
+
+    "=g:Var
+    "
+    "  g:somehting
+    "       variable description
+    "  g:options   
+    "       variable description
+    "       line2
+    "  g:options
+    "
+    "==
+
+    "=s:Var 
+    "
+    "  s:somehting
+    "       variable description
+    "  s:options   
+    "       variable description
+    "       line2
+    "  s:options
+    "
+    "==
+
+FUNCTION DOC FORMAT
+-------------------
+
+    "=FUNC
+    "=FUNCTION
+    " function_name :
+    "   list@hash :
+    "       description
+    "
+    "   name@string :
+    "       description
+    "   
+    "   @return: 
+    "==
+
+COMMANDS DOC FORMAT
+--------------------
+
+    "=COMMANDS
+    "   
+    "    :ReloadCPAN
+    "         description
+    "
+    "    :AutoComplPopEnable
+    "
+    "==
+
+INSTALLATION
+=========================
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+SUPPORT AND DOCUMENTATION
+=========================
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc Vim::Packager
+
+You can also look for information at:
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Vim-Packager
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/Vim-Packager
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/Vim-Packager
+
+    Search CPAN
+        http://search.cpan.org/dist/Vim-Packager/
+
+
+COPYRIGHT AND LICENCE
+=====================
+
+Copyright (C) 2009 Cornelius
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
