@@ -50,6 +50,9 @@ sub read {
     my @lines = <$fh>;
     for ( my  $idx = 0 ; $_ = $lines[ $idx ] and $idx < @lines ; $idx ++ ) {
         next if /^#/;    # skip comment
+        s/#.*$//;
+        s/\s*$//;
+        
 
         if ( /^=(\w+)/ ) {
             my $dispatch = '__' . $1;

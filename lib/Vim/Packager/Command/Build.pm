@@ -8,6 +8,7 @@ sub options {
 
 }
 
+use YAML;
 
 sub run {
     my ( $self, @args ) = @_;
@@ -19,11 +20,10 @@ sub run {
     die 'there is no meta_reader file' unless -e $file;
 
     open my $fh , "<" , $file ;
-    $meta_reader->read( \$fh );
+    $meta_reader->read( $fh );
     close $fh;
 
-    use YAML;
-    DumpFile( "meta_reader.yml" , $meta_reader->meta );
+    YAML::DumpFile( "META.yml" , $meta_reader->meta );
 }
 
 1;
