@@ -22,6 +22,7 @@ sub run {
     }
 
 
+    check_vim();
     check_vim_version();
 
 }
@@ -42,7 +43,30 @@ sub check_manifest {
     }
 }
 
+sub check_vim {
+
+}
+
+
+sub findbin {
+    my $which = shift;
+    my $path  = $ENV{PATH};
+    my @paths = split /:/, $path;
+    for (@paths) {
+        my $bin = $_ . '/' . $which;
+        return $bin if ( -x $bin );
+    }
+}
+
+sub find_vim {
+    return $ENV{VIMPATH} || findbin('vim');
+}
+
+
+
 sub check_vim_version {
+
+
 
 }
 
