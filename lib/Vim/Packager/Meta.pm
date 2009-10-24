@@ -97,6 +97,9 @@ sub __dependency {
     my ( $self, $cur, $lines, $idx ) = @_;
     $self->meta->{dependency} = [];
     for( $idx++ ; $idx < @$lines ; $idx ++ ) {
+        my $cn = $lines->[ $idx + 1 ];
+        return if $cn =~ /^=/;
+
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
         my ( $name , $op , $version ) = ( $c =~ m{
@@ -118,6 +121,9 @@ sub __dependency {
 sub __script {
     my ($self,$cur,$lines,$idx) = @_;
     for( $idx++ ; $idx < @$lines ; $idx ++ ) {
+        my $cn = $lines->[ $idx + 1 ];
+        return if $cn =~ /^=/;
+
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
         $c =~ s/\s*$//;

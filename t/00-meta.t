@@ -13,6 +13,10 @@ $meta->read();
 my $meta_object = $meta->meta;
 ok( $meta_object );
 
+use Data::Dumper;warn Dumper( $meta_object );
+
+
+
 
 
 
