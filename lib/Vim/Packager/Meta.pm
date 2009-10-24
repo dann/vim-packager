@@ -9,7 +9,6 @@ my @possible_filename = qw(
     MEAT.yml
 );
 
-
 sub new { bless {} , shift }
 
 sub meta {
@@ -45,13 +44,10 @@ sub get_meta_file {
 
 sub read {
     my $class = shift;
-    my $file = $class->get_meta_file();
 
-    die 'there is no meta file' unless -e $file;
+    my $fh = shift;
 
-    open my $fh , "<" , $file ;
     my @lines = <$fh>;
-    close $fh;
 
     my $idx = 0;
     for ( @lines ) {
@@ -63,9 +59,6 @@ sub read {
     }
 }
 
-sub convert_to_yaml {
-
-}
 
 sub _get_value {
     my $cur = shift;

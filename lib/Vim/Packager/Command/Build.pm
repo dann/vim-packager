@@ -12,13 +12,19 @@ sub options {
 sub run {
     my ( $self, @args ) = @_;
 
-
     # read meta file
     my $meta = Vim::Packager::Meta->new;
-    $meta->read();
-    $meta->convert_to_yaml('META');
 
+    my $file = $meta->get_meta_file();
+    die 'there is no meta file' unless -e $file;
 
+    open my $fh , "<" , $file ;
+    $meta->read( \$fh );
+    close $fh;
+
+    my $meta_o = $meta->meta;
+    use YAML;
+    DumpFile( "META.yml" , $meta_o );
 }
 
 1;

@@ -1,5 +1,5 @@
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 use warnings;
 use strict;
 use lib 'lib';
@@ -7,16 +7,60 @@ BEGIN {
     use_ok('Vim::Packager::Meta');
 };
 
+
+my $sample =<<END;
+
+=name       new_plugin
+=author     Cornelius (cornelius.howl\@gmail.com)
+=version    0.1
+=version    plugin/new_plugin.vim   # extract version infomation from this file
+=type       syntax
+=dependency
+    autocomplpop.vim > 0.3
+    rainbow.vim      >= 1.2
+
+=script
+    bin/parser
+    bin/template_generator
+
+=repository git://....../
+
+END
+
+
+open my $fh , "<" , \$sample;
+
 my $meta = Vim::Packager::Meta->new;
 ok ( $meta );
-$meta->read();
+$meta->read( $fh );
+
+close $fh;
+
 my $meta_object = $meta->meta;
 ok( $meta_object );
 
-use Data::Dumper;warn Dumper( $meta_object );
 
-
-
-
-
+is_deeply( $meta_object , {
+          'repository' => 'git://....../',
+          'dependency' => [
+                            {
+                              'version' => '0.3',
+                              'name' => 'autocomplpop.vim',
+                              'op' => '>'
+                            },
+                            {
+                              'version' => '1.2',
+                              'name' => 'rainbow.vim',
+                              'op' => '>='
+                            }
+                          ],
+          'script' => [
+                        'bin/parser',
+                        'bin/template_generator'
+                      ],
+          'version' => 'plugin/new_plugin.vim   # extract version infomation from this file',
+          'name' => 'new_plugin',
+          'type' => 'syntax',
+          'author' => 'Cornelius (cornelius.howl@gmail.com)'
+});
 
