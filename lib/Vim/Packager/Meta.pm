@@ -69,7 +69,7 @@ sub convert_to_yaml {
 
 sub _get_value {
     my $cur = shift;
-    my ($v) = ( $cur =~ /^=\w+ (.*)$/ ) ;
+    my ($v) = ( $cur =~ /^=\w+\s+(.*)$/ ) ;
     return $v;
 }
 
@@ -99,7 +99,8 @@ sub __dependency {
     for( $idx ; $idx < @$lines ; $idx ++ ) {
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
-        my ( $name , $op , $version ) = $c =~ m{^([0-9a-zA-Z._-]+)\s+[=<>]{1,2}\s+([0-9a-z.-]+)};
+        my ( $name , $op , $version ) = 
+            $c =~ m{^([0-9a-zA-Z._-]+)\s+([=<>]{1,2})\s+([0-9a-z.-]+)};
         push @{ $self->meta->{dependency} }, {
             name => $name,
             op => $op,
@@ -110,16 +111,29 @@ sub __dependency {
 
 sub __script {
     my ($self,$cur,$lines,$idx) = @_;
-
+    $idx++;
+    for( $idx ; $idx < @$lines ; $idx ++ ) {
+        my $c = $lines->[ $idx ];
+        $c =~ s/^\s*//;
+        $c =~ s/\s*$//;
+        push @{ $self->meta->{script} },  $c;
+    }
 }
 
 sub __repository {
     my ($self,$cur,$lines,$idx) = @_;
-
+    $self->meta->{repository} = _get_value( $cur );
 }
 
 sub __vim_version {
+    my ($self,$cur,$lines,$idx) = @_;
+    my $v = _get_value( $cur );
+    my ( $op , $version ) = $v =~ m/^([<=>]{1,2})\s+([0-9.-a-z]+)/;
 
+    $self->meta->{vim_version} = {
+        op => $op,
+        version => $version,
+    };
 }
 
 # some alias
