@@ -1,4 +1,4 @@
-package Vim::Packager::Meta;
+package Vim::Packager::MetaReader;
 use warnings;
 use strict;
 

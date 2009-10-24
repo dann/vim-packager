@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use lib 'lib';
 BEGIN {
-    use_ok('Vim::Packager::Meta');
+    use_ok('Vim::Packager::MetaReader');
 };
 
 
@@ -30,7 +30,7 @@ END
 
 open my $fh , "<" , \$sample;
 
-my $meta = Vim::Packager::Meta->new;
+my $meta = Vim::Packager::MetaReader->new;
 ok ( $meta );
 $meta->read( $fh );
 
