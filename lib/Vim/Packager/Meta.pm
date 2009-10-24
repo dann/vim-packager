@@ -94,13 +94,19 @@ sub __type {
 }
 
 sub __dependency {
-    my ($self,$cur,$lines,$idx) = @_;
-    $idx++;
-    for( $idx ; $idx < @$lines ; $idx ++ ) {
+    my ( $self, $cur, $lines, $idx ) = @_;
+    $self->meta->{dependency} = [];
+    for( $idx++ ; $idx < @$lines ; $idx ++ ) {
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
-        my ( $name , $op , $version ) = 
-            $c =~ m{^([0-9a-zA-Z._-]+)\s+([=<>]{1,2})\s+([0-9a-z.-]+)};
+        my ( $name , $op , $version ) = ( $c =~ m{
+                    ^
+                    ([0-9a-zA-Z._-]+)
+                    \s+
+                    ([=<>]{1,2})\s+
+                    ([0-9a-z.-]+)
+        }x );
+
         push @{ $self->meta->{dependency} }, {
             name => $name,
             op => $op,
@@ -111,8 +117,7 @@ sub __dependency {
 
 sub __script {
     my ($self,$cur,$lines,$idx) = @_;
-    $idx++;
-    for( $idx ; $idx < @$lines ; $idx ++ ) {
+    for( $idx++ ; $idx < @$lines ; $idx ++ ) {
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
         $c =~ s/\s*$//;
