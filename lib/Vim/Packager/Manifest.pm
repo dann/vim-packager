@@ -59,9 +59,7 @@ $MANIFEST = 'MANIFEST';
 
 $DEFAULT_MSKIP = File::Spec->catfile( dirname(__FILE__), "$MANIFEST.SKIP" );
 
-
 =head1 NAME
-
 
 =head1 SYNOPSIS
 
