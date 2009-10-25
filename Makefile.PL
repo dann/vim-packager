@@ -9,7 +9,8 @@ license  'perl';
 requires 
     'YAML' => 0,
     'App::CLI' => 0,
-    'Getopt::Long' => 0;
+    'Getopt::Long' => 0,
+    'DateTime::Format::DateParse' => 0;
     
 build_requires 'Test::More';
 

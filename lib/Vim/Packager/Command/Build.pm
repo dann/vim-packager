@@ -14,7 +14,6 @@ use YAML;
 sub run {
     my ( $self, @args ) = @_;
     my $make = Vim::Packager::MakeMaker->new;
-    $make->init_meta();
 
 }
 

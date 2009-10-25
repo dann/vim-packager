@@ -3,6 +3,7 @@ use warnings;
 use strict;
 
 use Vim::Packager::MetaReader;
+use DateTime::Format::DateParse;
 use YAML;
 
 our $VERSION = 0.0.1;
@@ -24,28 +25,24 @@ sub new {
         my $required_version = $dep->{version};
         my $version_op = $dep->{op};
 
-        my $installed_files;# get installed files of prerequire plugins
-        # check if prerequire plugin is installed.
+        my $installed_files;# XXX: get installed files of prerequire plugins
+        # XXX: check if prerequire plugin is installed.
 
         # XXX: or try to retreive meta information of a package
         my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
 
 
         if( ! $installed_files ) {
-
             warn sprintf "Warning: prerequisite %s %s not found.\n", 
               $prereq, $required_version
                    unless $self->{PREREQ_FATAL};
             
             $unsatisfied{ $prereq } = 'not installed';
-
         }
         elsif ( eval "$pr_version $version_op $required_version"  ) {
             warn sprintf "Warning: prerequisite %s %s not found. We have %s.\n",
               $prereq, $required_version, ($pr_version || 'unknown version') 
                   unless $self->{PREREQ_FATAL};
-
-
         }
     }
 
@@ -70,10 +67,37 @@ sub check_vim {
     }
 }
 
-sub check_vim_version {
-    my $vim = Vim::Packager::Utils::findbin('vim');
-    my $version_info = qx($vim --version);
 
+sub check_vim_version {
+    my $where_is_vim = Vim::Packager::Utils::findbin('vim');
+    my $version_output = qx{$where_is_vim --version};
+    my @lines = split /\n/, $version_output;
+
+    my ( $version, $date_string )
+        = $lines[ 0 ] =~ /^VIM - Vi IMproved ([0-9.]+) \((.*?)\)/;
+
+    my ( $revision_date, $compiled_time ) = split /,/, $date_string;
+
+    $compiled_time =~ s/\s*compiled\s*//;
+    $compiled_time = DateTime::Format::DateParse->parse_datetime($compiled_time);
+
+    my ($platform) = $lines[ 1 ] =~ /^(.*?) version/;
+
+    # Included patches: 1-264
+    my ( $patch_from, $patch_to )
+        = $lines[ 2 ] =~ /^Included patches: (\d+)-(\d+)$/;
+
+    # Compiled by [who]
+    my ($compiled_by) = $lines[ 3 ] =~ /^Compiled by (.*?)$/;
+
+    return {
+        version     => $version,
+        platform    => $platform,
+        compiled_on => $compiled_time,
+        patch_from  => $patch_from,
+        patch_to    => $patch_to,
+        compiled_by => $compiled_by
+    };
 }
 
 
