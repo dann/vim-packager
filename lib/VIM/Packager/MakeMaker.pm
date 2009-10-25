@@ -101,10 +101,9 @@ END
     }
 
     push @result , "\n# ======= APP SECTION\n";
-    push @result , join "\n",map {  "$_ = " . $configs{ $_ } } keys %configs;
+    push @result , join "\n",map {  "$_ = " . $configs{ $_ } } sort keys %configs;
     push @result , "\n# ======= DIR SECTION \n";
-    push @result , join "\n",map {  "$_ = " . $dir_configs{ $_ } } keys %dir_configs;
-
+    push @result , join "\n",map {  "$_ = " . $dir_configs{ $_ } } sort keys %dir_configs;
 
 
 
