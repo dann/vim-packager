@@ -30,7 +30,6 @@ sub new {
         # XXX: check if prerequire plugin is installed. 
         #      try to get installed package record by vimana manager 
         #      or just look into file and parse the version
-
         my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
 
         if( ! $installed_files ) {
@@ -62,10 +61,9 @@ sub new {
 
 }
 
-
+# XXX: implement me
 sub full_setup {
     my @attrib_help = qw(
-        
         AUTHOR
         NAME
         CONFIGURE
@@ -86,7 +84,6 @@ sub full_setup {
         clean
         force
     );
-
 }
 
 sub parse_version {
@@ -198,6 +195,89 @@ sub prompt ($;$) {  ## no critic
     return (!defined $ans || $ans eq '') ? $def : $ans;
 }
 
+
+
+=item find_perl
+
+Finds the executables PERL and FULLPERL
+
+=cut
+
+sub find_perl {
+    my($self, $ver, $names, $dirs, $trace) = @_;
+
+    if ($trace >= 2){
+        print "Looking for perl $ver by these names:
+@$names
+in these dirs:
+@$dirs
+";
+    }
+
+    my $stderr_duped = 0;
+    local *STDERR_COPY;
+
+    unless ($Is{BSD}) {
+        # >& and lexical filehandles together give 5.6.2 indigestion
+        if( open(STDERR_COPY, '>&STDERR') ) {  ## no critic
+            $stderr_duped = 1;
+        }
+        else {
+            warn <<WARNING;
+find_perl() can't dup STDERR: $!
+You might see some garbage while we search for Perl
+WARNING
+        }
+    }
+
+    foreach my $name (@$names){
+        foreach my $dir (@$dirs){
+            next unless defined $dir; # $self->{PERL_SRC} may be undefined
+            my ($abs, $val);
+            if ($self->file_name_is_absolute($name)) {     # /foo/bar
+                $abs = $name;
+            } elsif ($self->canonpath($name) eq 
+                     $self->canonpath(basename($name))) {  # foo
+                $abs = $self->catfile($dir, $name);
+            } else {                                            # foo/bar
+                $abs = $self->catfile($Curdir, $name);
+            }
+            print "Checking $abs\n" if ($trace >= 2);
+            next unless $self->maybe_command($abs);
+            print "Executing $abs\n" if ($trace >= 2);
+
+            my $version_check = qq{$abs -le "require $ver; print qq{VER_OK}"};
+            $version_check = "$Config{run} $version_check"
+                if defined $Config{run} and length $Config{run};
+
+            # To avoid using the unportable 2>&1 to suppress STDERR,
+            # we close it before running the command.
+            # However, thanks to a thread library bug in many BSDs
+            # ( http://www.freebsd.org/cgi/query-pr.cgi?pr=51535 )
+            # we cannot use the fancier more portable way in here
+            # but instead need to use the traditional 2>&1 construct.
+            if ($Is{BSD}) {
+                $val = `$version_check 2>&1`;
+            } else {
+                close STDERR if $stderr_duped;
+                $val = `$version_check`;
+
+                # 5.6.2's 3-arg open doesn't work with >&
+                open STDERR, ">&STDERR_COPY"  ## no critic
+                        if $stderr_duped;
+            }
+
+            if ($val =~ /^VER_OK/m) {
+                print "Using PERL=$abs\n" if $trace;
+                return $abs;
+            } elsif ($trace >= 2) {
+                print "Result: '$val' ".($? >> 8)."\n";
+            }
+        }
+    }
+    print STDOUT "Unable to find a perl $ver (by these names: @$names, in these dirs: @$dirs)\n";
+    0; # false and not empty
+}
 
 
 1;
