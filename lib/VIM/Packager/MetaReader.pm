@@ -58,6 +58,19 @@ sub read {
             $class->$dispatch( $_ , \@lines , $idx );
         }
     }
+
+    # check for mandatory meta info
+    my $fall;
+    my $meta = $class->meta;
+    for ( qw(name author version type vim_version) {
+        if( !defined $meta->{ $_ } ) {
+            print STDOUT "META: column '$_' is required. ";
+            $fall = 1;
+        }
+    }
+    die if $fall;
+
+
 }
 
 
