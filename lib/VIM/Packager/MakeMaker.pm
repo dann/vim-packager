@@ -10,12 +10,10 @@ use YAML;
 our $VERSION = 0.0.1;
 my  $VERBOSE = 1;
 
-
 # perl vim-packager build 
 # $ make 
 #       # auto install dependency 
 # $ make install
-
 
 sub new { 
     my $self = bless {},shift;
@@ -104,13 +102,16 @@ END
     push @result , join "\n",map {  "$_ = " . $configs{ $_ } } sort keys %configs;
     push @result , join "\n",map {  "$_ = " . $dir_configs{ $_ } } sort keys %dir_configs;
 
+
+    # make install file list
+    use File::Find;
+
     # make dependency 
     my @pkgs = sort keys %unsatisfied;
     push @result, <<END;
 
 # -----
-all :
-\t\tcp Makefile Makefile.old 
+install :
 
 # ----- dependency section
 
