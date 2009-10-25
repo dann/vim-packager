@@ -61,6 +61,22 @@ END
     }
 }
 
+sub check_vim {
+    my $vim = Vim::Packager::Utils::findbin('vim');
+    unless( $vim ) {
+        study STDOUT;
+        print "It seems you dont have vim installed.";
+        die;
+    }
+}
+
+sub check_vim_version {
+    my $vim = Vim::Packager::Utils::findbin('vim');
+    my $version_info = qx($vim --version);
+
+}
+
+
 sub init_meta {
     my $self = shift;
     # read meta_reader file
@@ -126,6 +142,7 @@ sub prompt ($;$) {  ## no critic
 
     return (!defined $ans || $ans eq '') ? $def : $ans;
 }
+
 
 
 1;
