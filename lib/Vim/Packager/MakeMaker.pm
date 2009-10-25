@@ -47,19 +47,51 @@ sub new {
         }
     }
 
-    if (%unsatisfied && $self->{PREREQ_FATAL}){
-        my $failedprereqs = join "\n", map {"    $_ $unsatisfied{$_}"} 
-                            sort { $a cmp $b } keys %unsatisfied;
-        die <<"END";
-MakeMaker FATAL: prerequisites not found.
-$failedprereqs
 
-Please install these modules first and rerun 'perl Makefile.PL'.
-END
+    my %configure_att ;
+    if (defined $self->{CONFIGURE}) {
+        if (ref $self->{CONFIGURE} eq 'CODE') {
+            %configure_att = %{&{$self->{CONFIGURE}}};
+            $self = { %$self, %configure_att };  # merge config
+        } else {
+            Carp::croak "Attribute 'CONFIGURE' to WriteMakefile() not a code reference\n";
+        }
     }
+
+
+
 }
 
 
+sub full_setup {
+    my @attrib_help = qw(
+        
+        AUTHOR
+        NAME
+        CONFIGURE
+        INST_AUTOLOAD
+        INST_PLUGIN
+        INST_SYNTAX
+
+        INST_AFTER_PLUGIN
+        INST_AFTER_AUTOLOAD
+        INST_AFTER_FTPLUGIN
+    );
+
+    my @MM_Sections = qw(
+        all
+        dist
+        depend
+        install
+        clean
+        force
+    );
+
+}
+
+sub parse_version {
+
+}
 
 sub check_vim_version {
     my $where_is_vim = Vim::Packager::Utils::findbin('vim');
