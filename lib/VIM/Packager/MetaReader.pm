@@ -62,8 +62,8 @@ sub read {
     # check for mandatory meta info
     my $fall;
     my $meta = $class->meta;
-    for ( qw(name author version type vim_version) {
-        if( !defined $meta->{ $_ } ) {
+    for ( qw(name author version type vim_version) ) {
+        if( ! defined $meta->{ $_ } ) {
             print STDOUT "META: column '$_' is required. ";
             $fall = 1;
         }
