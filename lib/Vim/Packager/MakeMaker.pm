@@ -58,18 +58,16 @@ END
     }
 }
 
-sub check_vim {
-    my $vim = Vim::Packager::Utils::findbin('vim');
-    unless( $vim ) {
-        study STDOUT;
-        print "It seems you dont have vim installed.";
-        die;
-    }
-}
 
 
 sub check_vim_version {
     my $where_is_vim = Vim::Packager::Utils::findbin('vim');
+
+    unless( $where_is_vim ) {
+        print STDOUT "It seems you dont have vim installed.";
+        die;
+    }
+
     my $version_output = qx{$where_is_vim --version};
     my @lines = split /\n/, $version_output;
 
