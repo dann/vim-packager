@@ -10,6 +10,7 @@ sub options {
 }
 
 use YAML;
+use Vim::Packager::MakeMaker;
 
 sub run {
     my ( $self, @args ) = @_;

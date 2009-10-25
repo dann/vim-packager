@@ -52,7 +52,6 @@ sub read {
         next if /^#/;    # skip comment
         s/#.*$//;
         s/\s*$//;
-        
 
         if ( /^=(\w+)/ ) {
             my $dispatch = '__' . $1;
@@ -98,6 +97,7 @@ sub __dependency {
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
         next if $c =~ /^#/; # skip comment
+        next if $c =~ /^\s*$/;
 
         my ( $name , $op , $version ) = ( $c =~ m{
                     ^
@@ -124,6 +124,8 @@ sub __script {
         my $c = $lines->[ $idx ];
         $c =~ s/^\s*//;
         $c =~ s/\s*$//;
+        next if $c =~ /^\s*$/;
+
         push @{ $self->meta->{script} },  $c;
     }
 }

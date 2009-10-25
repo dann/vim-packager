@@ -21,9 +21,9 @@ sub new {
     
     my %unsatisfied = ();
     for my $dep ( @{ $meta->{dependency} } ) {
-        my $prereq = $dep->{name};
+        my $prereq           = $dep->{name};
         my $required_version = $dep->{version};
-        my $version_op = $dep->{op};
+        my $version_op       = $dep->{op};
 
         my $installed_files;# XXX: get installed files of prerequire plugins
         # XXX: check if prerequire plugin is installed.
@@ -31,18 +31,17 @@ sub new {
         # XXX: or try to retreive meta information of a package
         my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
 
-
         if( ! $installed_files ) {
-            warn sprintf "Warning: prerequisite %s %s not found.\n", 
+            warn sprintf "Warning: prerequisite %s - %s not found.\n", 
               $prereq, $required_version
-                   unless $self->{PREREQ_FATAL};
+                   ; # unless $self->{PREREQ_FATAL};
             
             $unsatisfied{ $prereq } = 'not installed';
         }
         elsif ( eval "$pr_version $version_op $required_version"  ) {
-            warn sprintf "Warning: prerequisite %s %s not found. We have %s.\n",
+            warn sprintf "Warning: prerequisite %s - %s not found. We have %s.\n",
               $prereq, $required_version, ($pr_version || 'unknown version') 
-                  unless $self->{PREREQ_FATAL};
+                    ; # unless $self->{PREREQ_FATAL};
         }
     }
 
