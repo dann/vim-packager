@@ -17,9 +17,6 @@ sub run {
     $make->init_meta();
 
 
-    if (-f "MANIFEST" && ! -f "Makefile"){
-        check_manifest();
-    }
 
 
     check_vim();
