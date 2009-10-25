@@ -3,7 +3,7 @@ use warnings;
 use strict;
 
 sub install {
-
+    warn $ENV{DEPS};
 
 
 
