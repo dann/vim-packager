@@ -1,4 +1,4 @@
-package Vim::Packager::Manifest;
+package VIM::Packager::Manifest;
 require Exporter;
 use Config;
 use File::Basename;
@@ -63,7 +63,7 @@ $DEFAULT_MSKIP = File::Spec->catfile( dirname(__FILE__), "$MANIFEST.SKIP" );
 
 =head1 SYNOPSIS
 
-    use Vim::Packager::Manifest qw(...funcs to import...);
+    use VIM::Packager::Manifest qw(...funcs to import...);
 
     mkmanifest();
 
@@ -87,7 +87,7 @@ this is borrowed from ExtUtils::Manifest
 
 =head2 Functions
 
-Vim::Packager::Manifest exports no functions by default.  The following are
+VIM::Packager::Manifest exports no functions by default.  The following are
 exported on request
 
 =over 4
@@ -572,7 +572,7 @@ sub cp_if_diff {
 	    best($from,$to), last STRICT_SWITCH if $how eq 'best';
 	    cp($from,$to), last STRICT_SWITCH if $how eq 'cp';
 	    ln($from,$to), last STRICT_SWITCH if $how eq 'ln';
-	    croak("Vim::Packager::Manifest::cp_if_diff " .
+	    croak("VIM::Packager::Manifest::cp_if_diff " .
 		  "called with illegal how argument [$how]. " .
 		  "Legal values are 'best', 'cp', and 'ln'.");
 	}
@@ -734,7 +734,7 @@ means F<foo/bar> style not F<foo\bar>.
 
 Anything between white space and an end of line within a C<MANIFEST>
 file is considered to be a comment.  Any line beginning with # is also
-a comment. Beginning with Vim::Packager::Manifest 1.52, a filename may
+a comment. Beginning with VIM::Packager::Manifest 1.52, a filename may
 contain whitespace characters if it is enclosed in single quotes; single
 quotes or backslashes in that filename must be backslash-escaped.
 
@@ -804,7 +804,7 @@ C<&maniread>, and C<&manicopy> are exportable.
 
 =head2 GLOBAL VARIABLES
 
-C<$Vim::Packager::Manifest::MANIFEST> defaults to C<MANIFEST>. Changing it
+C<$VIM::Packager::Manifest::MANIFEST> defaults to C<MANIFEST>. Changing it
 results in both a different C<MANIFEST> and a different
 C<MANIFEST.SKIP> file. This is useful if you want to maintain
 different distributions for different audiences (say a user version

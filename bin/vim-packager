@@ -1,12 +1,12 @@
 #!/usr/bin/env perl 
 use warnings;
 use strict;
-use Vim::Packager;
-use Vim::Packager::Command;
+use VIM::Packager;
+use VIM::Packager::Command;
 
 $|++;
 my $cmd = shift @ARGV;
-my $ret = Vim::Packager::Command->invoke( $cmd, @ARGV );
+my $ret = VIM::Packager::Command->invoke( $cmd, @ARGV );
 
 exit (defined $ret ? $ret : 1);
 

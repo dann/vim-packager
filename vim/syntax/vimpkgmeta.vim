@@ -1,5 +1,5 @@
-" Vim syntax file
-" Language: Vim Package Meta file
+" VIM syntax file
+" Language: VIM Package Meta file
 " Maintainer:   Cornelius (c9s)
 " Last Change:  Sun Oct 25 02:12:21 2009
 

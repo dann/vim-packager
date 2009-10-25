@@ -1,4 +1,4 @@
-package Vim::Packager::Utils;
+package VIM::Packager::Utils;
 use warnings;
 use strict;
 

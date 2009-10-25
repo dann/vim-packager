@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-    use_ok( 'Vim::Packager' );
+    use_ok( 'VIM::Packager' );
 }
 
-diag( "Testing Vim::Packager $Vim::Packager::VERSION, Perl $], $^X" );
+diag( "Testing VIM::Packager $VIM::Packager::VERSION, Perl $], $^X" );

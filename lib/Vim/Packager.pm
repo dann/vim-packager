@@ -1,11 +1,11 @@
-package Vim::Packager;
+package VIM::Packager;
 
 use warnings;
 use strict;
 
 =head1 NAME
 
-Vim::Packager - 
+VIM::Packager - 
 
 =head1 VERSION
 
@@ -17,7 +17,7 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-    use Vim::Packager;
+    use VIM::Packager;
 
     my $packager = VIM::Packager->create(
 
@@ -36,14 +36,14 @@ Cornelius(c9s), C<< <cornelius.howl at gmail.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-vim-packager at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Vim-Packager>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=VIM-Packager>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Vim::Packager
+    perldoc VIM::Packager
 
 
 You can also look for information at:
@@ -52,19 +52,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Vim-Packager>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=VIM-Packager>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Vim-Packager>
+L<http://annocpan.org/dist/VIM-Packager>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Vim-Packager>
+L<http://cpanratings.perl.org/d/VIM-Packager>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Vim-Packager/>
+L<http://search.cpan.org/dist/VIM-Packager/>
 
 =back
 
@@ -85,4 +85,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; # End of Vim::Packager
+1; # End of VIM::Packager

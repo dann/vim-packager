@@ -1,4 +1,4 @@
-package Vim::Packager::Command::Build;
+package VIM::Packager::Command::Build;
 use warnings;
 use strict;
 use base qw(App::CLI::Command);
@@ -10,11 +10,11 @@ sub options {
 }
 
 use YAML;
-use Vim::Packager::MakeMaker;
+use VIM::Packager::MakeMaker;
 
 sub run {
     my ( $self, @args ) = @_;
-    my $make = Vim::Packager::MakeMaker->new;
+    my $make = VIM::Packager::MakeMaker->new;
 
 }
 

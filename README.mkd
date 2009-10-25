@@ -1,4 +1,4 @@
-Vim::Packager ABSTRACT
+VIM::Packager ABSTRACT
 =======================
 
 to create a new plugin:
@@ -51,7 +51,7 @@ you can also define your '.IGNORE' file
         .git*
         test-
 
-Vim::Packager PACKAGE INSTALLATION
+VIM::Packager PACKAGE INSTALLATION
 ==================================
 
     $ vim-packager build
@@ -196,21 +196,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Vim::Packager
+    perldoc VIM::Packager
 
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Vim-Packager
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=VIM-Packager
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Vim-Packager
+        http://annocpan.org/dist/VIM-Packager
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Vim-Packager
+        http://cpanratings.perl.org/d/VIM-Packager
 
     Search CPAN
-        http://search.cpan.org/dist/Vim-Packager/
+        http://search.cpan.org/dist/VIM-Packager/
 
 
 COPYRIGHT AND LICENCE

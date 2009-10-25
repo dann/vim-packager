@@ -1,4 +1,4 @@
-package Vim::Packager::Command;
+package VIM::Packager::Command;
 use warnings;
 use strict;
 use base qw(App::CLI App::CLI::Command);

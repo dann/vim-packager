@@ -2,7 +2,7 @@ Changes
 MANIFEST
 Makefile.PL
 README
-lib/Vim/Packager.pm
+lib/VIM/Packager.pm
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
