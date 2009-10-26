@@ -155,6 +155,7 @@ sub __dependency {
     my ( $self, $cur, $lines, $idx ) = @_;
     $self->meta->{dependency} = [];
 
+PKG:
     for( $idx++ ; $idx < @$lines ; $idx ++ ) {
         my $cn = $lines->[ $idx + 1 ];
         return if $cn =~ /^=/;
@@ -194,7 +195,9 @@ DEP:
 
                 my $c = trim($lines->[ $idx ]);
                 trim_comment( $c );
+
                 next DEP if blank( $c );
+                next PKG if $c !~ /^\|/;
 
                 if( my ($target,$from) = $c =~ m{^\|\s*(.*?)\s*\|\s*(.*)$} ) {
                     push @files_to_retrieve, { from => $from , target => $target };
