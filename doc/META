@@ -42,19 +42,21 @@
         # directory
         #   for plugins which can't detect version.
     
-    libperl.vim > 0.2   
-        | autoload/libperl.vim | http://github.com/c9s/libperl.vim/raw/master/autoload/libperl.vim
+    libperl.vim > 0.2 | http://path/to/package/package.tar.gz
 
         # check for libperl.vim version
         # if require newer version
-        # we download the script as autoload/libperl.vim
-
+        # we download the package elsewhere and install it.
 
 =script
 
     bin/parser
-
     bin/template_generator
 
+    # these files should be installed to ~/.vim/bin/
+
 =repository git://....../
+
+
+
 
