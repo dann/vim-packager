@@ -86,11 +86,11 @@ END
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
 
-    push @result , qq|all : install-deps|;
+    push @result , qq|all : install-deps |;
 
     # XXX: -Ilib to dev
 
-    push @result , qq|install : |;
+    push @result , qq|install : install-deps |;
     push @result , qq|\n\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                    . qq| -e 'install()' \$(VIMS_TO_RUNT) |;
 
