@@ -102,27 +102,58 @@ END
     push @result , join "\n",map {  "$_ = " . $configs{ $_ } } sort keys %configs;
     push @result , join "\n",map {  "$_ = " . $dir_configs{ $_ } } sort keys %dir_configs;
 
+    my $filelist = $self->make_filelist();
 
-    # make install file list
-    use File::Find;
+    my @to_install = keys %$filelist;
+    push @result , "TO_INST_VIMS = " . join(" \\\n\t" , @to_install );
+
+    my @vims_to_runtime = %$filelist;
+    push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
+
+    # XXX: -Ilib to dev
+    push @result , qq{install : \n\t\t \$(FULLPERL) -Ilib -MVIM::Packager::Installer}
+                    .  qq{ -e 'VIM::Packager::Installer::install()' \$(VIMS_TO_RUNT) } ;
+
+    # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
 
     # make dependency 
     my @pkgs = sort keys %unsatisfied;
-    push @result, <<END;
 
-# -----
-install :
-
-# ----- dependency section
-
-install-deps :
-\t\tDEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer=install -e 'VIM::Packager::Installer::install()'
-END
+#     push @result, <<END;
+# install-deps :
+# \t\tDEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer -e 'VIM::Packager::Installer::install_deps()'
+# END
 
     print STDOUT "Write to Makefile.\n";
     open FH , ">" , 'Makefile';
     print FH join("\n",@result);
     close FH;
+}
+
+
+sub make_filelist {
+    my $self = shift;
+
+    my %install = ();
+    my $base_prefix = 'viml';
+    my $prefix = File::Spec->join($ENV{HOME} , '.vim');
+    use File::Find;
+    File::Find::find( sub {
+        return unless -f $_;
+        return if /\#/;
+        return if /~$/;             # emacs temp files
+        return if /,v$/;            # RCS files
+        return if m{\.swp$};        # vim swap files
+
+        my $src = File::Spec->catfile( $File::Find::dir , $_ );
+
+        my $target;
+        ( $target = $src ) =~ s{^$base_prefix/}{};
+        $target = File::Spec->catfile( $prefix , $target );
+
+        $install{ $src } = $target;
+    } , $base_prefix );
+    return \%install;
 }
 
 # XXX: implement me
