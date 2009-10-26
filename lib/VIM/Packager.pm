@@ -19,10 +19,6 @@ our $VERSION = '0.01';
 
     use VIM::Packager;
 
-    my $packager = VIM::Packager->create(
-
-    );
-
 =head1 FUNCTIONS
 
 =cut

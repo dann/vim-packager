@@ -48,7 +48,7 @@ sub install_deps_remote {
     $|++;
     while( my ($target,$from) = each %install ) {
 
-        # XXX: we might expand Makefile variable to support such things like:
+        # XXX: we might need to expand Makefile macro to support such things like:
         #    $(VIM_BASEDIR)/path/to/
         # see VIM::Packager::MakeMaker
         $target = File::Spec->join( vim_rtp_home() , $target );

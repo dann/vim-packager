@@ -11,10 +11,7 @@ my @possible_filename = qw(
 
 sub new { bless {} , shift }
 
-sub meta {
-    my $self = shift;
-    return $self->{meta} ||= {};
-}
+sub meta { my $self = shift; return $self->{meta} ||= {}; }
 
 sub get_meta_file {
     for my $f ( @possible_filename ) {
@@ -25,16 +22,21 @@ sub get_meta_file {
 
 =pod Generic VIM Meta file format
 
-    =name       new_plugin
-    =author     Cornelius (cornelius.howl@gmail.com)
-    =version    0.1
-    =version    plugin/new_plugin.vim   # extract version infomation from this file
-    =type       syntax
+    =name            new_plugin
+
+    =author          Cornelius (cornelius.howl@gmail.com)
+
+    =version_from    plugin/new_plugin.vim   # extract version infomation from this file
+
+    =type            syntax
+
     =dependency
+
         autocomplpop.vim > 0.3
         rainbow.vim      >= 1.2
 
     =script
+
         bin/parser
         bin/template_generator
 
@@ -62,7 +64,7 @@ sub read {
     # check for mandatory meta info
     my $fall;
     my $meta = $class->meta;
-    for ( qw(name author version type vim_version) ) {
+    for ( qw(name author version_from type vim_version) ) {
         if( ! defined $meta->{ $_ } ) {
             print STDOUT "META: column '$_' is required. ";
             $fall = 1;
@@ -90,7 +92,7 @@ sub __author {
     $self->meta->{author} = _get_value( $cur );
 }
 
-sub __version {
+sub __version_from {
     my ($self,$cur,$lines,$idx) = @_;
     $self->meta->{version} = _get_value( $cur );
 }
