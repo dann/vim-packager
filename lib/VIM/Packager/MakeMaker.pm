@@ -50,6 +50,7 @@ sub new {
 #
 # Author: Cornelius
 # Email : cornelius.howl@gmail.com
+# 
 
 END
     
@@ -135,7 +136,7 @@ sub make_filelist {
     my $self = shift;
 
     my %install = ();
-    my $base_prefix = 'viml';
+    my $base_prefix = 'vimlib';
     my $prefix = File::Spec->join($ENV{HOME} , '.vim');
     use File::Find;
     File::Find::find( sub {
