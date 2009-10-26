@@ -86,7 +86,7 @@ END
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
     # XXX: -Ilib to dev
-    push @result , qq|install :|;
+    push @result , qq|install : install-deps|;
     push @result , qq|\n\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                    . qq| -e 'install()' \$(VIMS_TO_RUNT) |;
 
@@ -107,8 +107,10 @@ END
     }
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
-    push @result, qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
+    if( @pkgs_version > 0 ) {
+        push @result, qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
+    }
 
 
     print STDOUT "Write to Makefile.\n";
