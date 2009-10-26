@@ -44,6 +44,8 @@ sub install_deps_remote {
     my $package_name = shift @ARGV;
     my %install = @ARGV;
 
+    print "*** Installing dependencies ***\n";
+
     print sprintf( "Installing %s\n",  $package_name);
     $|++;
     while( my ($target,$from) = each %install ) {
