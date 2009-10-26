@@ -15,6 +15,7 @@ requires(
     'File::Find'                  => 0,
     'File::Path'                  => 0,
     'Exporter::Lite'  => 0,
+    'LWP::Simple' => 0,
 );
     
 build_requires 'Test::More';

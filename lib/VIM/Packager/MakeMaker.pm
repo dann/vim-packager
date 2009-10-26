@@ -3,7 +3,7 @@ use warnings;
 use strict;
 
 use VIM::Packager::MetaReader;
-use VIM::Packager::Utils;
+use VIM::Packager::Utils qw(vim_rtp_home vim_inst_record_dir findbin);
 use DateTime::Format::DateParse;
 use YAML;
 use File::Spec;
@@ -22,11 +22,6 @@ my  $VERBOSE = 1;
     $ make install
 
 =cut
-
-
-sub vim_inst_record_dir { File::Spec->join( $ENV{HOME} , '.vim-packager' , 'installed' ) }
-
-sub vim_rtp_home { return File::Spec->join( $ENV{HOME} , '.vim' ) }
 
 sub new { 
     my $self = bless {},shift;
@@ -186,7 +181,10 @@ sub check_dependency {
 
             # XXX: grep out ?
             for ( @$require_files ) {
+                # XXX: expand Makefile variable to support such things like:
+                #    $(VIM_BASEDIR)/path/to/
                 my $target_path =  File::Spec->join( vim_rtp_home() , $_->{target} ) ;
+
                 unless( -e $target_path ) {
                     warn sprintf "Warning: prerequisite %s - %s not found.\n\tWill be retreived from %s\n", 
                             $prereq , $target_path , $_->{from} ;
@@ -277,7 +275,7 @@ sub parse_version {
 sub vim_version_info {
 
     # check_vim_version 
-    my $where_is_vim = VIM::Packager::Utils::findbin('vim');
+    my $where_is_vim = findbin('vim');
     unless( $where_is_vim ) {
         print STDOUT "It seems you dont have vim installed.";
         die;
