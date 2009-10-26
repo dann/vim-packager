@@ -120,10 +120,10 @@ END
     # make dependency 
     my @pkgs = sort keys %unsatisfied;
 
-#     push @result, <<END;
-# install-deps :
-# \t\tDEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer -e 'VIM::Packager::Installer::install_deps()'
-# END
+    push @result, <<END;
+install-deps :
+\t\tDEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer -e 'VIM::Packager::Installer::install_deps()'
+END
 
     print STDOUT "Write to Makefile.\n";
     open FH , ">" , 'Makefile';
