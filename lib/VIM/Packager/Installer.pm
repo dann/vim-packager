@@ -10,6 +10,9 @@ use VIM::Packager::Utils qw(vim_rtp_home vim_inst_record_dir findbin);
 our @EXPORT = ();
 our @EXPORT_OK = qw(install_deps install install_deps_remote);
 
+
+# FIXME:  install deps from vim script archive network.
+
 sub install_deps {
     my $deps = shift @ARGV;
     my @pkgs = split /,/,$deps;
