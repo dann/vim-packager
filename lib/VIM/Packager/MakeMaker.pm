@@ -85,8 +85,12 @@ END
     my @vims_to_runtime = %$filelist;
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
+
+    push @result , qq|all : install-deps|;
+
     # XXX: -Ilib to dev
-    push @result , qq|install : install-deps|;
+
+    push @result , qq|install : |;
     push @result , qq|\n\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                    . qq| -e 'install()' \$(VIMS_TO_RUNT) |;
 
@@ -103,7 +107,6 @@ END
             qq|\t\t\$(NOECHO) \$(FULLPERL) |
             . qq| -Ilib -MVIM::Packager::Installer=install_deps_remote |
             . qq| -e 'install_deps_remote()' $pkgname \\\n\t@{[ join(" \\\n\t", @nonversion_params ) ]} |;
-
     }
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
