@@ -6,6 +6,9 @@ use VIM::Packager::MetaReader;
 use VIM::Packager::Utils;
 use DateTime::Format::DateParse;
 use YAML;
+use File::Spec;
+use File::Path;
+use File::Find;
 
 our $VERSION = 0.0.1;
 my  $VERBOSE = 1;
@@ -96,6 +99,29 @@ END
     close FH;
 }
 
+sub vim_inst_record_dir { File::Spec->join( $ENV{HOME} , '.vim' , 'installed' );  }
+
+sub get_installed_pkgs {
+    my $self = shift;
+    my $dir = $self->vim_inst_record_dir();
+    unless( -e $dir ) {
+        File::Path::mkpath [ $dir ];
+        return ();
+    }
+
+    my @pkg_record_files ();
+    my $closure = sub { 
+        my $file = $_;
+        my $dir  = $File::Find::dir;
+
+        return unless -f $file;
+
+        my $path = File::Spec->join($dir , $file );
+        push @pkg_record_files , $path;
+    };
+    File::Find::find( \&$closure ,$dir );
+    return @pkg_record_files;
+}
 
 sub check_dependency {
     my $self = shift;
@@ -104,7 +130,7 @@ sub check_dependency {
     for my $dep ( @{ $meta->{dependency} } ) {
         my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
 
-        my $installed_files;# XXX: get installed files of prerequire plugins
+        my $installed_files;  # XXX: get installed files of prerequire plugins
 
         # XXX: check if prerequire plugin is installed. 
         #      try to get installed package record by vimana manager 
@@ -151,7 +177,6 @@ sub make_filelist {
     my %install = ();
     my $base_prefix = 'vimlib';
     my $prefix = File::Spec->join($ENV{HOME} , '.vim');
-    use File::Find;
     File::Find::find( sub {
         return unless -f $_;
         return if /\#/;
