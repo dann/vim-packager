@@ -115,7 +115,7 @@ sub __version_from {
             chomp $line;
             $line =~ s/^"//;
             $self->meta->{version} = _get_value( $line );
-            last;
+            return;
         }
     }
     print "Warning: Can not found version, you should declare your version in your vim script.\n";
