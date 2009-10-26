@@ -194,6 +194,9 @@ sub check_dependency {
                     warn sprintf "Warning: prerequisite %s - %s not found.\n\tWill be retreived from %s\n", 
                             $prereq , $target_path , $_->{from} ;
                 }
+                else {
+                    printf "[ %s ] => [ OK ]" , $prereq ;
+                }
             }
         }
 
