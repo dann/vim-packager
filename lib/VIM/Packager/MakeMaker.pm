@@ -57,25 +57,13 @@ END
     my %unsatisfied = $self->check_dependency( $meta );
 
     my %configs = ();
-    my %dir_configs = ();
+    my %dir_configs = $self->init_vim_dir_macro();
 
     my $perl = find_perl();
     die "Can not found perl." unless $perl;
     print STDOUT "Found perl: $perl\n";
 
     $configs{ FULLPERL } = $perl;
-    $dir_configs{ VIM_BASEDIR } = $ENV{VIM_BASEDIR} || File::Spec->join( $ENV{HOME} , '.vim' );
-    $dir_configs{ VIM_AFTERBASE_DIR} = $ENV{VIM_AFTERBASE_DIR}  || File::Spec->join( $dir_configs{VIM_BASEDIR} , 'after' );
-
-    for my $sub ( qw(after syntax ftplugin compiler plugin macros colors) ) {
-        my $path_name = 'VIM_' . uc($sub) . '_DIR';
-        my $after_path_name = 'VIM_AFTER_' . uc($sub) . '_DIR';
-        $dir_configs{$path_name} = $ENV{$path_name}
-            || File::Spec->join( $dir_configs{VIM_BASEDIR}, $sub );
-
-        $dir_configs{$after_path_name} = $ENV{$after_path_name}
-            || File::Spec->join( $dir_configs{VIM_BASEDIR}, $sub );
-    }
 
     push @result , join "\n",map {  "$_ = " . $configs{ $_ } } sort keys %configs;
     push @result , join "\n",map {  "$_ = " . $dir_configs{ $_ } } sort keys %dir_configs;
@@ -137,6 +125,24 @@ sub check_dependency {
     }
 
     return %unsatisfied;
+}
+
+sub init_vim_dir_macro {
+    my $self = shift;
+    my %dir_configs = ();
+    $dir_configs{ VIM_BASEDIR } = $ENV{VIM_BASEDIR} || File::Spec->join( $ENV{HOME} , '.vim' );
+    $dir_configs{ VIM_AFTERBASE_DIR} = $ENV{VIM_AFTERBASE_DIR}  || File::Spec->join( $dir_configs{VIM_BASEDIR} , 'after' );
+
+    for my $sub ( qw(after syntax ftplugin compiler plugin macros colors) ) {
+        my $path_name = 'VIM_' . uc($sub) . '_DIR';
+        my $after_path_name = 'VIM_AFTER_' . uc($sub) . '_DIR';
+        $dir_configs{$path_name} = $ENV{$path_name}
+            || File::Spec->join( $dir_configs{VIM_BASEDIR}, $sub );
+
+        $dir_configs{$after_path_name} = $ENV{$after_path_name}
+            || File::Spec->join( $dir_configs{VIM_BASEDIR}, $sub );
+    }
+    return %dir_configs;
 }
 
 sub make_filelist {
