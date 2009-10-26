@@ -63,7 +63,8 @@ is_deeply(
                 'op'      => '>='
             },
             {
-                'files' => [ {
+                'name' => 'autocomplpop.vim',
+                'required_files' => [ {
                         'target' => 'autoload/acp.vim',
                         'from'   => 'http://c9s.blogspot.com'
                     },
@@ -72,7 +73,6 @@ is_deeply(
                         'from'   => 'http://plurk.com/c9s'
                     }
                 ],
-                'name' => 'autocomplpop.vim'
             }
 ]);
 

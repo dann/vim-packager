@@ -1,15 +1,27 @@
 
+
+
 # sample meta file
 
 =name       new_plugin
 
+    # name of your plugin , valid characters are [a-zA-Z0-9._-]
+
 =author     Cornelius (cornelius.howl@gmail.com)
 
-=version    0.1
+    # author name
 
-=version    plugin/new_plugin.vim   # extract version infomation from this file
+=version    0.1
+    
+    # version of your plugin
+
+=version    plugin/new_plugin.vim  
+
+    # extract version infomation from this file
 
 =type       syntax|plugin|autoload|ftplugin|doc|compiler|indent
+
+    # type
 
 =vim_version >= 7.0
 
@@ -56,7 +68,4 @@
     # these files should be installed to ~/.vim/bin/
 
 =repository git://....../
-
-
-
 

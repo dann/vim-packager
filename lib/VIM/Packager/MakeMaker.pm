@@ -59,6 +59,10 @@ END
     
     my %unsatisfied = $self->check_dependency( $meta );
 
+    use Data::Dumper;warn Dumper( \%unsatisfied );
+    
+    
+
     my %configs = ();
     my %dir_configs = $self->init_vim_dir_macro();
 
@@ -136,26 +140,36 @@ sub check_dependency {
 
     my %unsatisfied = ();
     for my $dep ( @{ $meta->{dependency} } ) {
-        my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
 
-        my $installed_files;  # XXX: get installed files of prerequire plugins
+        if ( defined $dep->{version} ) {
+            my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
 
-        # XXX: check if prerequire plugin is installed. 
-        #      try to get installed package record by vimana manager 
-        #      or just look into file and parse the version
-        my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
+            my $installed_files;  # XXX: get installed files of prerequire plugins
 
-        if( ! $installed_files ) {
-            warn sprintf "Warning: prerequisite %s - %s not found.\n", 
-              $prereq, $required_version;
+            # XXX: check if prerequire plugin is installed. 
+            #      try to get installed package record by vimana manager 
+            #      or just look into file and parse the version
+            my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
 
-            $unsatisfied{ $prereq } = 'not installed';
+            if( ! $installed_files ) {
+                warn sprintf "Warning: prerequisite %s - %s not found.\n", 
+                $prereq, $required_version;
+
+                $unsatisfied{ $prereq } = 'not installed';
+            }
+            elsif ( eval "$pr_version $version_op $required_version"  ) {
+                warn sprintf "Warning: prerequisite %s - %s not found. We have %s.\n",
+                    $prereq, $required_version, ($pr_version || 'unknown version') ;
+                $unsatisfied{ $prereq } = $pr_version;
+            }
         }
-        elsif ( eval "$pr_version $version_op $required_version"  ) {
-            warn sprintf "Warning: prerequisite %s - %s not found. We have %s.\n",
-                $prereq, $required_version, ($pr_version || 'unknown version') ;
-            $unsatisfied{ $prereq } = $pr_version;
+        else {
+            # we can not detect installed package version
+            # here is the other way to install dependencies.
+            my ( $prereq , $require_files ) = ( $dep->{name}  , $dep->{required_files} );
+            $unsatisfied{ $prereq } = $require_files;  # XXX: we should detect for type is arrayref
         }
+
     }
 
     return %unsatisfied;

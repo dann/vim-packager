@@ -174,7 +174,7 @@ DEP:
             }
             push @{ $self->meta->{dependency} }, {
                 name => $pkgname,
-                files => \@files_to_retrieve ,
+                required_files => \@files_to_retrieve ,
             };
         }
     }
