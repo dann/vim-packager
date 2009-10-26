@@ -186,7 +186,6 @@ sub parse_version {
 
 }
 
-
 sub vim_version_info {
 
     # check_vim_version 
@@ -225,9 +224,6 @@ sub vim_version_info {
         compiled_by => $compiled_by
     };
 }
-
-
-
 
 sub init_meta {
     my $self = shift;
