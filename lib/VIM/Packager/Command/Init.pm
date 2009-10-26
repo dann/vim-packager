@@ -21,7 +21,7 @@ sub run {
 
 =author         [Author]
 
-=version_from   [Version]
+=version_from   [File]
 
 =vim_version    >= 7.2
 
