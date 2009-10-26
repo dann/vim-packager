@@ -133,7 +133,6 @@ sub check_dependency {
     my $record_dir  = $self->vim_inst_record_dir();
     my @pkg_records = $self->get_installed_pkgs($record_dir);
 
-
     my %unsatisfied = ();
     for my $dep ( @{ $meta->{dependency} } ) {
         my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
