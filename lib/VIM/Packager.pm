@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-VIM::Packager - 
+VIM::Packager
 
 =head1 VERSION
 
@@ -19,11 +19,17 @@ our $VERSION = '0.01';
 
     use VIM::Packager;
 
+=head1 DESCRIPTION
+
+** Under Developing **
+
 =head1 FUNCTIONS
 
 =cut
 
+=head1 REPOSITORY 
 
+L<http://github.com/c9s/vim-packager>
 
 =head1 AUTHOR
 
