@@ -195,7 +195,7 @@ sub check_dependency {
                             $prereq , $target_path , $_->{from} ;
                 }
                 else {
-                    printf "[ %s ] => [ OK ]" , $prereq ;
+                    printf "[ %s ] ....  OK\n" , $prereq ;
                 }
             }
         }

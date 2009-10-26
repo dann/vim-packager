@@ -158,12 +158,11 @@ sub __dependency {
 PKG:
     for( $idx++ ; $idx < @$lines ; $idx ++ ) {
         my $cn = $lines->[ $idx + 1 ];
-        return if $cn =~ /^=/;
+        last PKG if $cn =~ /^=/;
 
         my $c = trim( $lines->[ $idx ] );
         trim_comment( $c );
         next if blank( $c );
-
 
         # for lines like:
         #       plugin.vim  > 1.0
@@ -190,18 +189,21 @@ PKG:
             $idx++;
 DEP:
             for( ; $idx < @$lines ; $idx++ )  {
-                my $cn = $lines->[ $idx + 1 ];
-                last DEP if $cn =~ /^=/;
 
                 my $c = trim($lines->[ $idx ]);
                 trim_comment( $c );
 
                 next DEP if blank( $c );
-                next PKG if $c !~ /^\|/;
+                warn $c;
 
                 if( my ($target,$from) = $c =~ m{^\|\s*(.*?)\s*\|\s*(.*)$} ) {
                     push @files_to_retrieve, { from => $from , target => $target };
                 }
+
+                my $cn = $lines->[ $idx + 1 ];
+                last DEP if $cn =~ /^=/;
+                last DEP if $cn !~ /^\|/;
+
             }
             push @{ $self->meta->{dependency} }, {
                 name => $pkgname,
