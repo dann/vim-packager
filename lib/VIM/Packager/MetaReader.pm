@@ -194,7 +194,6 @@ DEP:
                 trim_comment( $c );
 
                 next DEP if blank( $c );
-                warn $c;
 
                 if( my ($target,$from) = $c =~ m{^\|\s*(.*?)\s*\|\s*(.*)$} ) {
                     push @files_to_retrieve, { from => $from , target => $target };
