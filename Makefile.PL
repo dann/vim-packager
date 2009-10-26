@@ -13,7 +13,8 @@ requires(
     'DateTime::Format::DateParse' => 0,
     'File::Spec'                  => 0,
     'File::Find'                  => 0,
-    'File::Path'                  => 0
+    'File::Path'                  => 0,
+    'Exporter::Lite'  => 0,
 );
     
 build_requires 'Test::More';

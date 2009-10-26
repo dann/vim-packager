@@ -59,10 +59,6 @@ END
     
     my %unsatisfied = $self->check_dependency( $meta );
 
-    use Data::Dumper;warn Dumper( \%unsatisfied );
-    
-    
-
     my %configs = ();
     my %dir_configs = $self->init_vim_dir_macro();
 
@@ -85,17 +81,29 @@ END
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
     # XXX: -Ilib to dev
-    push @result , qq{install : \n\t\t \$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer}
-                    .  qq{ -e 'VIM::Packager::Installer::install()' \$(VIMS_TO_RUNT) } ;
+    push @result , qq|install :|;
+    push @result , qq|\n\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+                   . qq| -e 'install()' \$(VIMS_TO_RUNT) |;
 
     # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
 
     # make dependency 
-    my @pkgs = sort keys %unsatisfied;
+    push @result,"install-deps : ";
 
+    my @pkgs_nonversion = grep { ref($unsatisfied{$_}) eq 'ARRAY' } sort keys %unsatisfied;
+    for my $pkgname ( @pkgs_nonversion ) {
+        my @nonversion_params = map {  ( $_->{target} , $_->{from} ) } 
+            map { @{ $unsatisfied{ $_ } } } $pkgname ;
+        push @result,
+            qq|\t\t\$(NOECHO) \$(FULLPERL) |
+            . qq| -Ilib -MVIM::Packager::Installer=install_deps_remote |
+            . qq| -e 'install_deps_remote()' $pkgname @{[ join(' ', @nonversion_params ) ]} |;
+
+    }
+
+    my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
     push @result, <<END;
-install-deps :
-\t\t\$(NOECHO) DEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer -e 'VIM::Packager::Installer::install_deps()'
+\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps        -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' 
 END
 
     print STDOUT "Write to Makefile.\n";
@@ -168,6 +176,12 @@ sub check_dependency {
             # here is the other way to install dependencies.
             my ( $prereq , $require_files ) = ( $dep->{name}  , $dep->{required_files} );
             $unsatisfied{ $prereq } = $require_files;  # XXX: we should detect for type is arrayref
+
+            for ( @$require_files ) {
+                if( $_->{from} ) {
+                    warn sprintf "Warning: prerequisite %s - %s not found.\n", 
+                }
+            }
         }
 
     }
@@ -175,10 +189,16 @@ sub check_dependency {
     return %unsatisfied;
 }
 
+
+
+sub vim_rtp_home {
+    return File::Spec->join( $ENV{HOME} , '.vim' );
+}
+
 sub init_vim_dir_macro {
     my $self = shift;
     my %dir_configs = ();
-    $dir_configs{ VIM_BASEDIR } = $ENV{VIM_BASEDIR} || File::Spec->join( $ENV{HOME} , '.vim' );
+    $dir_configs{ VIM_BASEDIR } = $ENV{VIM_BASEDIR} || vim_rtp_home();
     $dir_configs{ VIM_AFTERBASE_DIR} = $ENV{VIM_AFTERBASE_DIR}  || File::Spec->join( $dir_configs{VIM_BASEDIR} , 'after' );
 
     for my $sub ( qw(after syntax ftplugin compiler plugin macros colors) ) {

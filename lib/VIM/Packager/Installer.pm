@@ -4,9 +4,14 @@ use strict;
 use File::Spec;
 use File::Path;
 use File::Copy;
+use Exporter::Lite;
+
+our @EXPORT = ();
+our @EXPORT_OK = qw(install_deps install install_deps_remote);
 
 sub install_deps {
-    warn $ENV{DEPS};
+    my @pkgs = @ARGV;
+    use Data::Dumper;warn Dumper( \@pkgs );
 
     # * foreach dependency
 
@@ -23,6 +28,14 @@ sub install_deps {
     # * install dependencies
 
     # * call VIM::Pacakger::Installer to install files
+
+}
+
+sub install_deps_remote {
+    my $package_name = shift @ARGV;
+    my %install = @ARGV;
+
+
 
 }
 
