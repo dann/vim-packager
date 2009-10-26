@@ -115,10 +115,11 @@ END
     push @result, qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
 
+
     print STDOUT "Write to Makefile.\n";
-    open FH , ">" , 'Makefile';
-    print FH join("\n",@result);
-    close FH;
+    open my $fh , ">" , 'Makefile';
+    print $fh join("\n",@result);
+    close $fh;
 }
 
 
