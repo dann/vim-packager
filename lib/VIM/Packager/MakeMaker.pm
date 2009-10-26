@@ -24,13 +24,9 @@ my  $VERBOSE = 1;
 =cut
 
 
-sub vim_inst_record_dir { 
-    File::Spec->join( $ENV{HOME} , '.vim-packager' , 'installed' ); 
-}
+sub vim_inst_record_dir { File::Spec->join( $ENV{HOME} , '.vim-packager' , 'installed' ) }
 
-sub vim_rtp_home {
-    return File::Spec->join( $ENV{HOME} , '.vim' );
-}
+sub vim_rtp_home { return File::Spec->join( $ENV{HOME} , '.vim' ) }
 
 sub new { 
     my $self = bless {},shift;
@@ -116,9 +112,8 @@ END
     }
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
-    push @result, <<END;
-\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps        -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' 
-END
+    push @result, qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
+                . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
 
     print STDOUT "Write to Makefile.\n";
     open FH , ">" , 'Makefile';
@@ -186,11 +181,14 @@ sub check_dependency {
             # we can not detect installed package version
             # here is the other way to install dependencies.
             my ( $prereq , $require_files ) = ( $dep->{name}  , $dep->{required_files} );
-            $unsatisfied{ $prereq } = $require_files;  # XXX: we should detect for type is arrayref
+            $unsatisfied{ $prereq } = $require_files; 
 
+            # XXX: grep out ?
             for ( @$require_files ) {
-                if( $_->{from} ) {
-                    warn sprintf "Warning: prerequisite %s - %s not found.\n", 
+                my $target_path =  File::Spec->join( vim_rtp_home() , $_->{target} ) ;
+                unless( -e $target_path ) {
+                    warn sprintf "Warning: prerequisite %s - %s not found.\n\tWill be retreived from %s\n", 
+                            $prereq , $target_path , $_->{from} ;
                 }
             }
         }
