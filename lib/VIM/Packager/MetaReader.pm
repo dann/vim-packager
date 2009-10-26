@@ -100,20 +100,47 @@ sub __type {
     $self->meta->{type} = _get_value( $cur );
 }
 
+
+my $package_re = '[0-9a-zA-Z._-]+';
+
+
+
+sub trim_comment {
+    my $c = shift;
+    $c =~ /^#/; # skip comment
+    return $c;
+}
+
+sub trim {
+    my $c = shift;
+    $c =~ s/^\s*//;
+    $c =~ s/\s*$//;
+    return $c;
+}
+
+sub blank {
+    my $c = shift;
+    return $c =~ /^\s*$/;
+}
+
 sub __dependency {
     my ( $self, $cur, $lines, $idx ) = @_;
     $self->meta->{dependency} = [];
+
     for( $idx++ ; $idx < @$lines ; $idx ++ ) {
         my $cn = $lines->[ $idx + 1 ];
         return if $cn =~ /^=/;
 
-        my $c = $lines->[ $idx ];
-        $c =~ s/^\s*//;
-        next if $c =~ /^#/; # skip comment
-        next if $c =~ /^\s*$/;
+        my $c = trim( $lines->[ $idx ] );
+        trim_comment( $c );
+        next if blank( $c );
+
+
+        # for lines like:
+        #       plugin.vim  > 1.0
         if( my ( $name , $op , $version ) = ( $c =~ m{
                     ^
-                    ([0-9a-zA-Z._-]+)
+                    ($package_re)
                     \s+
                     ([=<>]{1,2})\s+
                     ([0-9a-z.-]+) }x ) )
@@ -124,8 +151,35 @@ sub __dependency {
                 version => $version,
             };
         } 
+
+        # for lines like:
+        #       plugin.vim
+        #           | plugin/plugin.vim | http://...../.../plugin.vim
+        #
+        elsif( my ($pkgname) = ( $c =~ m{^($package_re)$} ) ) {
+            my @files_to_retrieve = ();
+            $idx++;
+DEP:
+            for( ; $idx < @$lines ; $idx++ )  {
+                my $cn = $lines->[ $idx + 1 ];
+                last DEP if $cn =~ /^=/;
+
+                my $c = trim($lines->[ $idx ]);
+                trim_comment( $c );
+                next DEP if blank( $c );
+
+                if( my ($target,$from) = $c =~ m{^\|\s*(.*?)\s*\|\s*(.*)$} ) {
+                    push @files_to_retrieve, { from => $from , target => $target };
+                }
+            }
+            push @{ $self->meta->{dependency} }, {
+                name => $pkgname,
+                files => \@files_to_retrieve ,
+            };
+        }
     }
 }
+
 
 sub __script {
     my ($self,$cur,$lines,$idx) = @_;
