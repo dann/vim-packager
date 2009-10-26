@@ -331,7 +331,7 @@ sub init_meta {
     $meta_reader->read( $fh );
     close $fh;
 
-    YAML::DumpFile( "META.yml" , $meta_reader->meta );
+    YAML::DumpFile( "VIMMETA.yml" , $meta_reader->meta );
 
     return $meta_reader->meta;
 }
