@@ -80,7 +80,8 @@ sub install_deps_remote {
 sub install {
     my %install_to = @ARGV;
 
-    # XXX: check more
+    # XXX: we should check more details on those files which are going to be
+    #      installed.
     # XXX: make installation record
 
     while( my ($from,$to) = each %install_to ){
