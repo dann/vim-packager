@@ -111,20 +111,19 @@ sub __dependency {
         $c =~ s/^\s*//;
         next if $c =~ /^#/; # skip comment
         next if $c =~ /^\s*$/;
-
-        my ( $name , $op , $version ) = ( $c =~ m{
+        if( my ( $name , $op , $version ) = ( $c =~ m{
                     ^
                     ([0-9a-zA-Z._-]+)
                     \s+
                     ([=<>]{1,2})\s+
-                    ([0-9a-z.-]+)
-        }x );
-
-        push @{ $self->meta->{dependency} }, {
-            name => $name,
-            op => $op,
-            version => $version,
-        };
+                    ([0-9a-z.-]+) }x ) )
+        {
+            push @{ $self->meta->{dependency} }, {
+                name => $name,
+                op => $op,
+                version => $version,
+            };
+        } 
     }
 }
 

@@ -19,6 +19,7 @@ my $sample =<<END;
 =author     Cornelius (cornelius.howl\@gmail.com)
 =version    0.1
 =version    plugin/new_plugin.vim   # extract version infomation from this file
+=vim_version < 7.2
 =type       syntax
 =dependency
     autocomplpop.vim > 0.3
@@ -63,7 +64,7 @@ is_deeply( $meta_object , {
                         'bin/parser',
                         'bin/template_generator'
                       ],
-          'version' => 'plugin/new_plugin.vim   # extract version infomation from this file',
+          'version' => 'plugin/new_plugin.vim',
           'name' => 'new_plugin',
           'type' => 'syntax',
           'author' => 'Cornelius (cornelius.howl@gmail.com)'
