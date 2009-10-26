@@ -6,9 +6,9 @@ to create a new plugin:
     $ vim-packager create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
 
     new_plugin/
-    new_plugin/plugin/
-    new_plugin/doc/
-    new_plugin/META
+    new_plugin/vimlib/plugin/
+    new_plugin/vimlib/doc/
+    new_plugin/vimlib/META
 
 fill your 'META' file
 
@@ -30,9 +30,9 @@ fill your 'META' file
 
     $ vim-package manifest
 
-            plugin/
-            plugin/...
-            plugin/...
+            vimlib/syntax/aaa.vim
+            vimlib/plugin/aaa.vim
+            vimlib/plugin/bbb.vim
 
 then update your 'MANIFEST' file
 
@@ -85,6 +85,7 @@ which generates
         META
         MANIFEST
         .IGNORE
+        vimlib/
 
 name from parent directory name
 version (should try to parse \*.vim files)
