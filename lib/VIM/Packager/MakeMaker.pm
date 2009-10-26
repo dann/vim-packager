@@ -54,30 +54,7 @@ sub new {
 
 END
     
-    my %unsatisfied = ();
-    for my $dep ( @{ $meta->{dependency} } ) {
-        my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
-
-        my $installed_files;# XXX: get installed files of prerequire plugins
-
-        # XXX: check if prerequire plugin is installed. 
-        #      try to get installed package record by vimana manager 
-        #      or just look into file and parse the version
-        my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
-
-        if( ! $installed_files ) {
-            warn sprintf "Warning: prerequisite %s - %s not found.\n", 
-              $prereq, $required_version;
-
-            $unsatisfied{ $prereq } = 'not installed';
-        }
-        elsif ( eval "$pr_version $version_op $required_version"  ) {
-            warn sprintf "Warning: prerequisite %s - %s not found. We have %s.\n",
-                $prereq, $required_version, ($pr_version || 'unknown version') ;
-            $unsatisfied{ $prereq } = $pr_version;
-        }
-    }
-
+    my %unsatisfied = $self->check_dependency( $meta );
 
     my %configs = ();
     my %dir_configs = ();
@@ -131,6 +108,36 @@ END
     close FH;
 }
 
+
+sub check_dependency {
+    my $self = shift;
+    my $meta = shift;
+    my %unsatisfied = ();
+    for my $dep ( @{ $meta->{dependency} } ) {
+        my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
+
+        my $installed_files;# XXX: get installed files of prerequire plugins
+
+        # XXX: check if prerequire plugin is installed. 
+        #      try to get installed package record by vimana manager 
+        #      or just look into file and parse the version
+        my $pr_version = 0 ; $pr_version = parse_version( $installed_files ) if $installed_files;  
+
+        if( ! $installed_files ) {
+            warn sprintf "Warning: prerequisite %s - %s not found.\n", 
+              $prereq, $required_version;
+
+            $unsatisfied{ $prereq } = 'not installed';
+        }
+        elsif ( eval "$pr_version $version_op $required_version"  ) {
+            warn sprintf "Warning: prerequisite %s - %s not found. We have %s.\n",
+                $prereq, $required_version, ($pr_version || 'unknown version') ;
+            $unsatisfied{ $prereq } = $pr_version;
+        }
+    }
+
+    return %unsatisfied;
+}
 
 sub make_filelist {
     my $self = shift;
