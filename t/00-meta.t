@@ -7,6 +7,14 @@ BEGIN {
 };
 
 
+open FH , ">" , "test.vim";
+print FH <<END;
+
+"=VERSION 0.3
+
+END
+close FH;
+
 my $sample =<<END;
 
 # comment
@@ -16,8 +24,7 @@ my $sample =<<END;
 # comment
 
 =author     Cornelius (cornelius.howl\@gmail.com)
-=version    0.1
-=version    plugin/new_plugin.vim   # extract version infomation from this file
+=version_from    test.vim   # extract version infomation from this file
 =vim_version < 7.2
 =type       syntax
 =dependency
@@ -82,7 +89,8 @@ is( $meta_object->{repository} , 'git://....../' );
 is( $meta_object->{author} , 'Cornelius (cornelius.howl@gmail.com)' );
 is( $meta_object->{type} , 'syntax' );
 is( $meta_object->{name} , 'new_plugin' );
-is( $meta_object->{version} , 'plugin/new_plugin.vim' );
+is( $meta_object->{version} , 0.3 );
 
 is_deeply( $meta_object->{script}, [ 'bin/parser', 'bin/template_generator' ]);
 
+unlink 'test.vim';

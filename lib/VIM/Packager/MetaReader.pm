@@ -57,14 +57,19 @@ sub read {
 
         if ( /^=(\w+)/ ) {
             my $dispatch = '__' . $1;
-            $class->$dispatch( $_ , \@lines , $idx );
+            if( $class->can( $dispatch ) )  {
+                $class->$dispatch( $_ , \@lines , $idx );
+            }
+            else {
+                print "meta tag $1 is not supported.\n";
+            }
         }
     }
 
     # check for mandatory meta info
     my $fall;
     my $meta = $class->meta;
-    for ( qw(name author version_from type vim_version) ) {
+    for ( qw(name author version type vim_version) ) {
         if( ! defined $meta->{ $_ } ) {
             print STDOUT "META: column '$_' is required. ";
             $fall = 1;
@@ -94,7 +99,20 @@ sub __author {
 
 sub __version_from {
     my ($self,$cur,$lines,$idx) = @_;
-    $self->meta->{version} = _get_value( $cur );
+    my $version_file = _get_value( $cur );
+    open FH, "<" , $version_file;
+    my @lines = <FH>;
+    close FH;
+    
+    for ( @lines ) {
+        if( /^"=VERSION/ ) {
+            my $line = $_;
+            chomp $line;
+            $line =~ s/^"//;
+            $self->meta->{version} = _get_value( $line );
+            last;
+        }
+    }
 }
 
 sub __type {
