@@ -3,13 +3,18 @@ use warnings;
 use strict;
 use base qw(App::CLI::Command);
 
+sub options { 
+
+
+}
+
 sub run {
     my ( $self, @args ) = @_;
 
     # create meta file skeleton
 
     # XXX: 
-    open FH,">","VIMMETA";
+    open FH, ">", "VIMMETA";
     print FH <<END;
 
 =name           [Name]
