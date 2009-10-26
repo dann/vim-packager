@@ -13,10 +13,24 @@ use File::Find;
 our $VERSION = 0.0.1;
 my  $VERBOSE = 1;
 
-# perl vim-packager build 
-# $ make 
-#       # auto install dependency 
-# $ make install
+
+=head1 SYNOPSIS
+
+    $ vim-packager build 
+    $ make 
+        # auto install dependency 
+    $ make install
+
+=cut
+
+
+sub vim_inst_record_dir { 
+    File::Spec->join( $ENV{HOME} , '.vim-packager' , 'installed' ); 
+}
+
+sub vim_rtp_home {
+    return File::Spec->join( $ENV{HOME} , '.vim' );
+}
 
 sub new { 
     my $self = bless {},shift;
@@ -112,9 +126,6 @@ END
     close FH;
 }
 
-sub vim_inst_record_dir { 
-    File::Spec->join( $ENV{HOME} , '.vim-packager' , 'installed' ); 
-}
 
 sub get_installed_pkgs {
     my ($self, $dir ) = @_;
@@ -191,9 +202,6 @@ sub check_dependency {
 
 
 
-sub vim_rtp_home {
-    return File::Spec->join( $ENV{HOME} , '.vim' );
-}
 
 sub init_vim_dir_macro {
     my $self = shift;
