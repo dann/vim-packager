@@ -86,6 +86,10 @@ END
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
 
+    my @bin = @{ $meta->{script} };
+    push @result,"TO_INST_BIN = " . join( " \\\n\t",@bin);
+
+
     push @result , qq|all : install-deps |;
 
     # XXX: -Ilib to dev

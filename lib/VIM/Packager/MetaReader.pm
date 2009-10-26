@@ -216,15 +216,15 @@ DEP:
 sub __script {
     my ($self,$cur,$lines,$idx) = @_;
     for( $idx++ ; $idx < @$lines ; $idx ++ ) {
-        my $cn = $lines->[ $idx + 1 ];
-        return if $cn =~ /^=/;
 
-        my $c = $lines->[ $idx ];
-        $c =~ s/^\s*//;
-        $c =~ s/\s*$//;
-        next if $c =~ /^\s*$/;
+        my $c = trim( $lines->[ $idx ] );
+        return if $c =~ /^=/;
+        next if blank( $c ) ;
 
         push @{ $self->meta->{script} },  $c;
+
+        my $cn = $lines->[ $idx + 1 ];
+        return if $cn =~ /^=/;
     }
 }
 
