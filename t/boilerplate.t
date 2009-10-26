@@ -1,8 +1,9 @@
-#!perl -T
+#!perl
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+# use Test::More tests => 3;
+use Test::More skip_all => "";
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;

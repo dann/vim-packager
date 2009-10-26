@@ -5,8 +5,8 @@ use strict;
 use YAML;
 
 my @possible_filename = qw( 
-    META
-    MEAT.yml
+    VIMMETA
+    VIMMETA.yml
 );
 
 sub new { bless {} , shift }
