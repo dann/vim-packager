@@ -36,6 +36,8 @@ sub install_deps {
 
 }
 
+our $VERBOSE = $ENV{VERBOSE} ? 1 : 0;
+
 use LWP::Simple ();
 sub install_deps_remote {
     my $package_name = shift @ARGV;
@@ -50,7 +52,9 @@ sub install_deps_remote {
         # see VIM::Packager::MakeMaker
         $target = File::Spec->join( vim_rtp_home() , $target );
 
-        print "Downloading from $from to $target...";
+        print "Downloading $from " ;
+        print " to " . $target if $VERBOSE;
+        print "...";
 
         {
             my ($v,$dir,$file) = File::Spec->splitpath( $target );
@@ -74,6 +78,9 @@ sub install_deps_remote {
 
 sub install {
     my %install_to = @ARGV;
+
+    # XXX: check more
+    # XXX: make installation record
 
     while( my ($from,$to) = each %install_to ){
         my ( $v, $dir, $file ) = File::Spec->splitpath($to);
