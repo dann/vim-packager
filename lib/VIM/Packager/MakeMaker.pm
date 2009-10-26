@@ -67,6 +67,7 @@ END
     print STDOUT "Found perl: $perl\n";
 
     $configs{ FULLPERL } = $perl;
+    $configs{ NOECHO } = '@';
 
     push @result , join "\n",map {  "$_ = " . $configs{ $_ } } sort keys %configs;
     push @result , join "\n",map {  "$_ = " . $dir_configs{ $_ } } sort keys %dir_configs;
@@ -80,7 +81,7 @@ END
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
     # XXX: -Ilib to dev
-    push @result , qq{install : \n\t\t \$(FULLPERL) -Ilib -MVIM::Packager::Installer}
+    push @result , qq{install : \n\t\t \$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer}
                     .  qq{ -e 'VIM::Packager::Installer::install()' \$(VIMS_TO_RUNT) } ;
 
     # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
@@ -90,7 +91,7 @@ END
 
     push @result, <<END;
 install-deps :
-\t\tDEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer -e 'VIM::Packager::Installer::install_deps()'
+\t\t\$(NOECHO) DEPS='@{[ join ",",@pkgs ]}' perl -Ilib -MVIM::Packager::Installer -e 'VIM::Packager::Installer::install_deps()'
 END
 
     print STDOUT "Write to Makefile.\n";
@@ -183,7 +184,8 @@ sub make_filelist {
 
     my %install = ();
     my $base_prefix = 'vimlib';
-    my $prefix = File::Spec->join($ENV{HOME} , '.vim');
+    # my $prefix = File::Spec->join($ENV{HOME} , '.vim');
+    my $prefix = '$(VIM_BASEDIR)';
     File::Find::find( sub {
         return unless -f $_;
         return if /\#/;
