@@ -97,6 +97,11 @@ sub __author {
     $self->meta->{author} = _get_value( $cur );
 }
 
+sub __version {
+    my ( $self, $cur, $lines, $idx ) = @_;
+    $self->meta->{version} = _get_value($cur);
+}
+
 sub __version_from {
     my ($self,$cur,$lines,$idx) = @_;
     my $version_file = _get_value( $cur );

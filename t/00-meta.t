@@ -24,9 +24,15 @@ my $sample =<<END;
 # comment
 
 =author     Cornelius (cornelius.howl\@gmail.com)
+
+=version         1.0
+
 =version_from    test.vim   # extract version infomation from this file
+
 =vim_version < 7.2
+
 =type       syntax
+
 =dependency
 
     autocomplpop.vim > 0.3
