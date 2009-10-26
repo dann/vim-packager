@@ -99,17 +99,19 @@ END
     close FH;
 }
 
-sub vim_inst_record_dir { File::Spec->join( $ENV{HOME} , '.vim' , 'installed' );  }
+sub vim_inst_record_dir { 
+    File::Spec->join( $ENV{HOME} , '.vim-packager' , 'installed' ); 
+}
 
 sub get_installed_pkgs {
-    my $self = shift;
-    my $dir = $self->vim_inst_record_dir();
+    my ($self, $dir ) = @_;
+
     unless( -e $dir ) {
         File::Path::mkpath [ $dir ];
         return ();
     }
 
-    my @pkg_record_files ();
+    my @pkg_record_files = ();
     my $closure = sub { 
         my $file = $_;
         my $dir  = $File::Find::dir;
@@ -119,6 +121,7 @@ sub get_installed_pkgs {
         my $path = File::Spec->join($dir , $file );
         push @pkg_record_files , $path;
     };
+
     File::Find::find( \&$closure ,$dir );
     return @pkg_record_files;
 }
@@ -126,6 +129,11 @@ sub get_installed_pkgs {
 sub check_dependency {
     my $self = shift;
     my $meta = shift;
+
+    my $record_dir  = $self->vim_inst_record_dir();
+    my @pkg_records = $self->get_installed_pkgs($record_dir);
+
+
     my %unsatisfied = ();
     for my $dep ( @{ $meta->{dependency} } ) {
         my ( $prereq, $required_version, $version_op ) = @$dep{qw(name version op)};
