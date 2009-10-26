@@ -86,17 +86,27 @@ END
     push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
 
 
+    my %bin_to_runtime = ();
     my @bin = @{ $meta->{script} };
-    push @result,"TO_INST_BIN = " . join( " \\\n\t",@bin);
+    for ( @bin ) {
+        my ($v, $d , $f ) = File::Spec->splitpath( $_ );
+        # $bin_to_runtime{ $_ } =  File::Spec->join( vim_rtp_home() , 'bin' , $f );
+        $bin_to_runtime{ $_ } =  File::Spec->join( '$(VIM_BASEDIR)' , 'bin' , $f );
+    }
 
+    push @result,"TO_INST_BIN = " . join( " \\\n\t", keys %bin_to_runtime );
+    push @result,"BIN_TO_RUNT = " . join( " \\\n\t", %bin_to_runtime );
 
     push @result , qq|all : install-deps |;
 
     # XXX: -Ilib to dev
 
     push @result , qq|install : install-deps |;
-    push @result , qq|\n\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+    push @result , qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                    . qq| -e 'install()' \$(VIMS_TO_RUNT) |;
+
+    push @result , qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+                   . qq| -e 'install()' \$(BIN_TO_RUNT) |;
 
     # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
 
