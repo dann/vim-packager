@@ -5,6 +5,8 @@ use warnings;
 use strict;
 
 use VIM::Packager::MakeMaker;
+
+
 my $recdir = '/tmp/vimpackager-test/';
 
 my @pkg_record = VIM::Packager::MakeMaker->get_installed_pkgs( $recdir );
