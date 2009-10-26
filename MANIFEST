@@ -25,9 +25,6 @@ lib/VIM/Packager/MetaWriter.pm
 lib/VIM/Packager/Utils.pm
 Makefile.PL
 MANIFEST
-META
-META.yml
-README
 README.mkd
 t/00-installed-record.t
 t/00-load.t

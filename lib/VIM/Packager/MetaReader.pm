@@ -118,6 +118,9 @@ sub __version_from {
             last;
         }
     }
+    print "Warning: Can not found version, you should declare your version in your vim script.\n";
+    print "For example \n";
+    print " \"=VERSION 0.3 \n";
 }
 
 sub __type {
