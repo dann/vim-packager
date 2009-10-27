@@ -20,7 +20,7 @@ requires(
     
 build_requires 'Test::More';
 
-install_script 'bin/vim-packager';
+install_script 'bin/vimp';
 auto_install;
 
 WriteAll;
