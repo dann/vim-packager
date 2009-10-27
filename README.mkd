@@ -3,7 +3,7 @@ VIM::Packager ABSTRACT
 
 to create a new plugin:
 
-    $ vim-packager create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
+    $ vimp create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
 
     new_plugin/
     new_plugin/vimlib/plugin/
@@ -54,7 +54,7 @@ you can also define your '.IGNORE' file
 VIM::Packager PACKAGE INSTALLATION
 ==================================
 
-    $ vim-packager build
+    $ vimp build
 
 the build action, which reads 'META' file , and convert meta information into META.yml
     or read 'META.yml' file
@@ -78,7 +78,7 @@ FOR AN EXISTED VIM DISTRIBUTION
         doc/
         README
 
-    $ vim-packager init
+    $ vimp init
 
 which generates
 
@@ -94,7 +94,7 @@ dependency (user should define it by self)
 
 your should update your package information from META file
 
-    $ vim-packager build 
+    $ vimp build 
 
     $ make install
 
@@ -121,7 +121,7 @@ BASIC REQUIREMENT
     "
     "=LICENSE MIT
     "
-    "=REPOSITORY http://github.com/c9s/p5-vim-packager
+    "=REPOSITORY http://github.com/c9s/p5-vimp
     "
     "=REVISION r4356
     "
@@ -202,16 +202,16 @@ perldoc command.
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=VIM-Packager
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=vimp
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/VIM-Packager
+        http://annocpan.org/dist/vimp
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/VIM-Packager
+        http://cpanratings.perl.org/d/vimp
 
     Search CPAN
-        http://search.cpan.org/dist/VIM-Packager/
+        http://search.cpan.org/dist/vimp/
 
 
 COPYRIGHT AND LICENCE
