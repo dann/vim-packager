@@ -50,20 +50,38 @@ sub read {
     my $fh = shift;
 
     my @lines = <$fh>;
-    for ( my  $idx = 0 ; $_ = $lines[ $idx ] and $idx < @lines ; $idx ++ ) {
-        next if /^#/;    # skip comment
-        s/#.*$//;
-        s/\s*$//;
 
-        if ( /^=(\w+)/ ) {
-            my $dispatch = '__' . $1;
-            if( $class->can( $dispatch ) )  {
-                $class->$dispatch( $_ , \@lines , $idx );
-            }
-            else {
-                print "meta tag $1 is not supported.\n";
-            }
+    my $cur_section;
+    my %sections = ();
+    for ( @lines ) {
+        chomp;
+        $_ = trim_comment($_);
+        $_ = trim( $_ );
+        next if blank($_);
+
+        if( /^=(\w+)(?:\s+(.*?))?$/ ) {
+            $cur_section = $1;
+            $sections{ $cur_section} = $2 if $2;
+            next;
         }
+
+        push @{ $sections{ $cur_section } } , $_;
+    }
+
+
+    use Data::Dumper;warn Dumper( \%sections );
+
+=pod
+    for my $sec ( keys %sections ) {
+        my @lines = $sections{ $sec };
+        my $dispatch = '__' . $sec;
+        if( $class->can( $dispatch ) )  {
+            $class->$dispatch( \@lines );
+        }
+        else {
+            print "meta tag $1 is not supported.\n";
+        }
+
     }
 
     # check for mandatory meta info
@@ -76,7 +94,7 @@ sub read {
         }
     }
     die if $fall;
-
+=cut
 
 }
 
@@ -135,7 +153,7 @@ my $package_re = '[0-9a-zA-Z._-]+';
 
 sub trim_comment {
     my $c = shift;
-    $c =~ /^#/; # skip comment
+    $c =~ s/#.*$//; # skip comment
     return $c;
 }
 
@@ -160,7 +178,7 @@ PKG:
         my $cn = $lines->[ $idx + 1 ];
         last PKG if $cn =~ /^=/;
 
-        my $c = trim( $lines->[ $idx ] );
+        my $c = trim $lines->[ $idx ] ;
         trim_comment( $c );
         next if blank( $c );
 
