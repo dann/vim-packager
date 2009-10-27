@@ -107,6 +107,7 @@ END
 
     push @result , qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                    . qq| -e 'install()' \$(BIN_TO_RUNT) |;
+    push @result, qq|\t\t\$(NOECHO) touch .exist|; # XXX: cur base path
 
     # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
 
@@ -120,7 +121,8 @@ END
         push @result,
             qq|\t\t\$(NOECHO) \$(FULLPERL) |
             . qq| -Ilib -MVIM::Packager::Installer=install_deps_remote |
-            . qq| -e 'install_deps_remote()' $pkgname \\\n\t@{[ join(" \\\n\t", @nonversion_params ) ]} |;
+            . qq| -e 'install_deps_remote()' $pkgname \\\n\t@{[ join(" \\\n\t", @nonversion_params ) ]} |
+            ;
     }
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
@@ -128,6 +130,8 @@ END
         push @result, qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
     }
+    push @result, qq|\t\t\$(NOECHO) touch .exist|; # XXX: cur base path
+
 
 
     print STDOUT "Write to Makefile.\n";
