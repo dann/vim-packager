@@ -83,11 +83,11 @@ END
     push @result , "TO_INST_VIMS = " . join(" \\\n\t" , @to_install );
 
     my @vims_to_runtime = %$filelist;
-    push @result,"VIMS_TO_RUNT = " . join( " \\\n\t" , @vims_to_runtime );
+    push @result, "VIMS_TO_RUNT = " . join( " \\\n\t", @vims_to_runtime );
 
 
     my %bin_to_runtime = ();
-    my @bin = @{ $meta->{script} };
+    my @bin = @{ $meta->{script} || [] };
     for ( @bin ) {
         my ($v, $d , $f ) = File::Spec->splitpath( $_ );
         # $bin_to_runtime{ $_ } =  File::Spec->join( vim_rtp_home() , 'bin' , $f );
