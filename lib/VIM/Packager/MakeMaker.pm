@@ -161,14 +161,14 @@ sub config_section {
 
     my $perl = find_perl();
     die "Can not found perl." unless $perl;
-    print STDOUT "Found perl: $perl\n";
+    # print STDOUT "Found perl: $perl\n";
 
     $configs{ FULLPERL } = $perl;
     $configs{ NOECHO } = '@';
     $configs{ TOUCH }  = `which touch`;
 
-    push @section , join "\n",map {  "$_ = " . $configs{ $_ } } sort keys %configs;
-    push @section , join "\n",map {  "$_ = " . $dir_configs{ $_ } } sort keys %dir_configs;
+    map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
+    map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
     return @section;
 }
 
