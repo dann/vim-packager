@@ -135,7 +135,7 @@ sub __author {
 
 sub __version {
     my ($self,$value) = @_;
-    $self->meta->{version} =$value;
+    $self->meta->{version} = $value;
 }
 
 sub __type {
@@ -177,9 +177,9 @@ sub __dependency {
 
         # for lines like:
         #       plugin.vim  > 1.0
-        if( m{^ ($package_re) \s+ ([=<>]{1,2})\s+ ([0-9a-z.-]+) }x ) {
+        warn $_;
+        if( m{^ ($package_re) \s+ ([=<>]{1,2}) \s+ ([0-9.]+) }x ) {
             my ( $name, $op, $version ) = ( $1, $2, $3 );
-
             $pkgs{ $name } = {
                 name => $name,
                 op => $op,
@@ -193,17 +193,21 @@ sub __dependency {
         #           | plugin/plugin.vim | http://...../.../plugin.vim
         elsif( m{^($package_re)$} ) {
             $cur_name = $1;
+            $pkgs{ $cur_name } = [];
             next;
         }
         elsif( m{^\|\s*(.*?)\s*\|\s*(\S+)} ) {
             my ( $target, $from ) = ( $1, $2 );
             push @{ $pkgs{ $cur_name } } , {  from => $from , target => $target  };
         }
+        
 
     }
 
-    $self->meta->{dependency}
-        = [ map { { name => $_ , required_files => $pkgs{ $_ } } } keys %pkgs ];
+    $self->meta->{dependency} = [
+        map( { { name => $_, required_files => $pkgs{$_} } } grep { ref( $pkgs{$_} ) eq 'ARRAY' } keys %pkgs ),
+        map( { $pkgs{$_} } grep { ref( $pkgs{$_} ) ne 'ARRAY' } keys %pkgs ),
+    ];
 }
 
 

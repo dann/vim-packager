@@ -15,6 +15,8 @@ print FH <<END;
 END
 close FH;
 
+
+
 my $sample =<<END;
 
 # comment
@@ -25,9 +27,9 @@ my $sample =<<END;
 
 =author     Cornelius (cornelius.howl\@gmail.com)
 
-=version         1.0
-
 =version_from    test.vim   # extract version infomation from this file
+
+=version         1.0
 
 =vim_version < 7.2
 
@@ -35,7 +37,7 @@ my $sample =<<END;
 
 =dependency
 
-    autocomplpop.vim > 0.3
+    something.vim > 0.3
             # comments
 
     rainbow.vim      >= 1.2
@@ -64,30 +66,35 @@ close $fh;
 my $meta_object = $meta->meta;
 ok( $meta_object );
 
+
+# use Data::Dumper;warn Dumper( $meta_object->{dependency} );
+
 is_deeply(
-    $meta_object->{dependency} , [ {
-                'version' => '0.3',
-                'name'    => 'autocomplpop.vim',
-                'op'      => '>'
-            },
-            {
-                'version' => '1.2',
-                'name'    => 'rainbow.vim',
-                'op'      => '>='
-            },
-            {
-                'name' => 'autocomplpop.vim',
-                'required_files' => [ {
-                        'target' => 'autoload/acp.vim',
-                        'from'   => 'http://c9s.blogspot.com'
-                    },
-                    {
-                        'target' => 'plugin/acp.vim',
-                        'from'   => 'http://plurk.com/c9s'
-                    }
-                ],
-            }
-]);
+    $meta_object->{dependency} , [
+          {
+            'name' => 'autocomplpop.vim',
+            'required_files' => [
+                                  {
+                                    'target' => 'autoload/acp.vim',
+                                    'from' => 'http://c9s.blogspot.com'
+                                  },
+                                  {
+                                    'target' => 'plugin/acp.vim',
+                                    'from' => 'http://plurk.com/c9s'
+                                  }
+                                ]
+          },
+          {
+            'version' => '0.3',
+            'name' => 'something.vim',
+            'op' => '>'
+          },
+          {
+            'version' => '1.2',
+            'name' => 'rainbow.vim',
+            'op' => '>='
+          }
+        ] , 'meta object');
 
 ok( $meta_object->{$_} ) for qw(repository script version name type author);
 

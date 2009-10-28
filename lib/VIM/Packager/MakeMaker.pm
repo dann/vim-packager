@@ -13,8 +13,8 @@ use File::Find;
 our $VERSION = 0.0.1;
 my  $VERBOSE = 1;
 
-use constant { 
-    LIB => 'vimlib',
+use constant {
+    LIB  => 'vimlib',
     META => 'VIMMETA',
 };
 
@@ -242,7 +242,7 @@ sub file_section {
     my @to_install = keys %$filelist;
 
     add_macro \@section , VIMLIB => LIB;
-    add_macro \@section , VIMMETA => VIMMETA;
+    add_macro \@section , VIMMETA => META;
 
     add_macro \@section , TO_INST_VIMS => multi_line @to_install ;
 
