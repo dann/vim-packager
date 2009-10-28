@@ -125,9 +125,21 @@ sub new {
     }
     add_st \@main , q|$(NOECHO) $(TOUCH) install-deps|; # XXX: cur base path
 
+    new_section \@main => 'link';
+    add_st \@main => q|$(NOECHO) $(NOOP)|;  # link vimlibs to runtime path of user
+
+    new_section \@main => 'dist';
+    add_st \@main => q|$(NOECHO) $(NOOP)|;
+
+    new_section \@main => 'uninstall';
+    add_st \@main => q|$(NOECHO) $(NOOP)|;
+
+    new_section \@main => 'upload';
+    add_st \@main => q|$(NOECHO) $(NOOP)|;
+
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
-            qw(pure_install install-deps)
+            qw(pure_install install-deps);
 
     print STDOUT "Write to Makefile.\n";
     open my $fh , ">" , 'Makefile';

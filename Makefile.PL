@@ -20,7 +20,7 @@ requires(
     
 build_requires 'Test::More';
 
-install_script 'bin/vimp';
+install_script 'bin/vimpkg';
 auto_install;
 
 WriteAll;
