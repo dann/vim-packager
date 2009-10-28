@@ -11,11 +11,11 @@ VIM::Packager ABSTRACT
 
 ### To install a vim package
 
-first thing, we need translate meta file (VIMMETA) into Makefile. just type:
+first thing, we need to translate meta file (VIMMETA) into Makefile. just type:
 
     $ vim-packager build
 
-this will detect dependencies of this vim script package and generate Makefile for you.
+this will detect dependencies of the vim package and generate Makefile for you.
 
 to install dependencies:
 
