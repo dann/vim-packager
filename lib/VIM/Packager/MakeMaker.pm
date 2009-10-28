@@ -112,9 +112,9 @@ sub new {
 
     new_section \@main => "pure_install";
 
-    add_st \@main => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+    add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(VIMS_TO_RUNT) |;
-    add_st \@main => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+    add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(BIN_TO_RUNT) |;
     add_st \@main => q|$(NOECHO) $(TOUCH) pure_install|;
 
@@ -130,8 +130,8 @@ sub new {
         my @nonversion_params = map {  ( $_->{target} , $_->{from} ) } 
             map { @{ $unsatisfied{ $_ } } } $pkgname ;
 
-        add_st \@main => multi_line q|$(NOECHO) $(FULLPERL) |
-                    . qq| -Ilib -MVIM::Packager::Installer=install_deps_remote |
+        add_st \@main => multi_line q|$(NOECHO) $(FULLPERL) $(PERLFLAGS)|
+                    . qq| -MVIM::Packager::Installer=install_deps_remote |
                     . qq| -e 'install_deps_remote()' $pkgname | 
                     , @nonversion_params ;
 
@@ -139,7 +139,7 @@ sub new {
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
     if( @pkgs_version > 0 ) {
-        add_st \@main => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
+        add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
     }
     add_st \@main , q|$(NOECHO) $(TOUCH) install-deps|; # XXX: cur base path
@@ -149,9 +149,9 @@ sub new {
         add_st \@main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
 
-
     new_section \@main => 'manifest';
-    add_noop_st \@main;
+    add_st \@main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Manifest=mkmanifest -e 'mkmanifest'|;
+    add_st \@main => q|$(NOECHO) $(TOUCH) MANIFEST.SKIP|;
 
     new_section \@main => 'dist';
     add_st \@main => q|$(TAR) $(TARFLAGS) $(DISTNAME).tar.gz $(TO_INST_VIMS)|;
@@ -251,6 +251,8 @@ sub config_section {
 
     $configs{TAR} ||= 'COPY_EXTENDED_ATTRIBUTES_DISABLE=1 COPYFILE_DISABLE=1 tar';
     $configs{TARFLAGS} ||= 'cvzf';
+
+    $configs{PERLFLAGS} ||= ' -Ilib ';
 
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
     map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
