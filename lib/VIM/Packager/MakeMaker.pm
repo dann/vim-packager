@@ -175,7 +175,22 @@ sub new {
             qw(pure_install install-deps);
     add_st \@main => q|$(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD)|;
 
-    print STDOUT "Write to Makefile.\n";
+
+    $self->generate_makefile( [
+            { meta   => \@meta_section },
+            { config => \@config_section },
+            { file   => \@file_section },
+            { main   => \@main } ] );
+}
+
+
+sub generate_makefile {
+    my $self = shift;
+    my $sections = shift;
+    
+
+    print "Write to Makefile.\n";
+
     open my $fh , ">" , 'Makefile';
     print $fh <<'END';
 # VIM::Packager::MakeMaker
@@ -188,21 +203,22 @@ sub new {
 # 
 
 END
-
-    print $fh "\n\n# -------- meta section ------\n";
-    print $fh join("\n", @meta_section );
-
-    print $fh "\n\n# -------- config section ------\n";
-    print $fh join("\n", @config_section);
-
-    print $fh "\n\n# -------- file section ------\n";
-    print $fh join("\n", @file_section);
-
-    print $fh "\n\n# -------- main section ------\n";
-    print $fh join("\n", @main );
-
+    for my $s ( @$sections ) {
+        my $n = (keys %$s)[0];
+        my $list = $s->{$n};
+        print $fh "\n";
+        print $fh "\n";
+        print $fh "\n";
+        print $fh sprintf("# -------- %s section ------\n" , $n );
+        print $fh join("\n", @$list );
+        print $fh "\n";
+        print $fh "\n";
+    }
     close $fh;
+    print "DONE\n";
+
 }
+
 
 sub meta_section {
     my $self = shift;
