@@ -23,6 +23,19 @@ my  $VERBOSE = 1;
 
 =cut
 
+
+
+sub multi_line {
+    my @items = @_;
+    return join " \\\n\t", @items ;
+}
+
+sub add_macro  {
+    my $ref = shift;
+    my ( $name, $content ) = @_;
+    push @{ $ref } , qq|$name = $content|;
+}
+
 sub new_section {
     my $ref = shift;
     my ( $name , @deps ) = @_;
@@ -108,11 +121,12 @@ END
     for my $pkgname ( @pkgs_nonversion ) {
         my @nonversion_params = map {  ( $_->{target} , $_->{from} ) } 
             map { @{ $unsatisfied{ $_ } } } $pkgname ;
-        push @main,
-            qq|\t\t\$(NOECHO) \$(FULLPERL) |
-            . qq| -Ilib -MVIM::Packager::Installer=install_deps_remote |
-            . qq| -e 'install_deps_remote()' $pkgname \\\n\t@{[ join(" \\\n\t", @nonversion_params ) ]} |
-            ;
+
+        add_st \@main => multi_line q|$(NOECHO) $(FULLPERL) |
+                    . qq| -Ilib -MVIM::Packager::Installer=install_deps_remote |
+                    . qq| -e 'install_deps_remote()' $pkgname | 
+                    , @nonversion_params ;
+
     }
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
@@ -123,7 +137,7 @@ END
     # push @main, qq|\t\t\$(NOECHO) touch |; # XXX: cur base path
 
     new_section \@main => 'clean';
-    add_st \@main => q|$(RM)|;
+    add_st \@main      => q|$(RM)|;
 
     print STDOUT "Write to Makefile.\n";
     open my $fh , ">" , 'Makefile';
@@ -162,10 +176,11 @@ sub file_section {
     my $filelist = $self->make_filelist();
 
     my @to_install = keys %$filelist;
-    push @section, "TO_INST_VIMS = " . join( " \\\n\t", @to_install );
+
+    add_macro \@section , TO_INST_VIMS => multi_line @to_install ;
 
     my @vims_to_runtime = %$filelist;
-    push @section, "VIMS_TO_RUNT = " . join( " \\\n\t", @vims_to_runtime );
+    add_macro \@section , VIMS_TO_RUNT => multi_line @vims_to_runtime ;
 
     my %bin_to_runtime = ();
 
@@ -176,8 +191,8 @@ sub file_section {
             # $bin_to_runtime{ $_ } =  File::Spec->join( vim_rtp_home() , 'bin' , $f );
             $bin_to_runtime{$_} = File::Spec->join( '$(VIM_BASEDIR)', 'bin', $f );
         }
-        push @section, "TO_INST_BIN = " . join( " \\\n\t", keys %bin_to_runtime );
-        push @section, "BIN_TO_RUNT = " . join( " \\\n\t", %bin_to_runtime );
+        add_macro \@section , TO_INST_BIN => multi_line keys %bin_to_runtime ;
+        add_macro \@section , BIN_TO_RUNT => multi_line %bin_to_runtime ;
     }
     return \@section;
 }
