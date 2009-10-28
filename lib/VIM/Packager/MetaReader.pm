@@ -177,7 +177,6 @@ sub __dependency {
 
         # for lines like:
         #       plugin.vim  > 1.0
-        warn $_;
         if( m{^ ($package_re) \s+ ([=<>]{1,2}) \s+ ([0-9.]+) }x ) {
             my ( $name, $op, $version ) = ( $1, $2, $3 );
             $pkgs{ $name } = {
