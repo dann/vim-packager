@@ -54,6 +54,10 @@ sub meta {
     return $self->{meta};
 }
 
+sub add_noop_st {
+	add_st $_[0] => q|$(NOECHO) $(NOOP)|;
+}
+
 sub new { 
     my $self = bless {},shift;
     my $meta = $self->init_meta();
@@ -83,6 +87,7 @@ sub new {
 
     my @main = ();
 
+    push @main, q|.PHONY: all install clean uninstall help upload link|;
     
     my %unsatisfied = $self->check_dependency( $meta );
 
@@ -93,8 +98,11 @@ sub new {
 
 
     # XXX: -Ilib to dev
+    new_section \@main => "all" => qw(install-deps);
+	add_noop_st \@main;
+
     new_section \@main => "install" => qw(pure_install install-deps) ;
-	add_st      \@main => q|$(NOECHO) $(NOOP)|;
+	add_noop_st \@main;
 
 
     new_section \@main => "pure_install";
@@ -104,6 +112,10 @@ sub new {
     add_st \@main => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(BIN_TO_RUNT) |;
     add_st \@main => q|$(NOECHO) $(TOUCH) pure_install|;
+
+    # XXX: should download the dependency and compare what we downloaded
+    # before (from schwern)
+
 
     # make dependency 
     new_section \@main => "install-deps";
@@ -132,10 +144,8 @@ sub new {
         add_st \@main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
 
-
-
     new_section \@main => 'dist';
-    add_st \@main => q|$(NOECHO) $(NOOP)|;
+	add_noop_st \@main;
 
 
     new_section \@main => 'help';
@@ -146,9 +156,14 @@ sub new {
         add_st \@main => q|$(RM_F) | . $_ ;
     }
 
+    # XXX: prompt user to uninstall depedencies
+
 
     new_section \@main => 'upload';
-    add_st \@main => q|$(NOECHO) $(NOOP)|;
+	add_noop_st \@main;
+
+
+
 
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
