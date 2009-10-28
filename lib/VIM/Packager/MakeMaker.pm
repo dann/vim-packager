@@ -97,6 +97,7 @@ sub new {
 
     my $filelist = $self->make_filelist();
 
+    my @meta_section   = $self->meta_section( $meta );
     my @config_section = $self->config_section();
     my @file_section   = $self->file_section( $filelist );
 
@@ -149,8 +150,8 @@ sub new {
     }
 
     new_section \@main => 'dist';
+    add_st \@main => q|$(TAR) $(TARFLAGS) dist.tar.gz $(TO_INST_VIMS)|;
 	add_noop_st \@main;
-
 
     new_section \@main => 'help';
     add_st \@main => q|perldoc VIM::Packager|;
@@ -185,15 +186,29 @@ sub new {
 # 
 
 END
+
+    print $fh "\n\n# -------- meta section ------\n";
+    print $fh join("\n", @meta_section );
+
     print $fh "\n\n# -------- config section ------\n";
     print $fh join("\n", @config_section);
+
     print $fh "\n\n# -------- file section ------\n";
     print $fh join("\n", @file_section);
+
     print $fh "\n\n# -------- main section ------\n";
     print $fh join("\n", @main );
+
     close $fh;
 }
 
+sub meta_section {
+    my $self = shift;
+    my $meta = shift;
+    my @section = ();
+    map { add_macro \@section, uc($_) => $meta->{$_} } grep { ! ref $meta->{$_} } keys %$meta;
+    return @section;
+}
 
 sub config_section {
     my $self = shift;
@@ -225,7 +240,7 @@ sub config_section {
     $configs{PWD}      ||= '`pwd`';
 
     $configs{TAR} ||= 'TAR = COPY_EXTENDED_ATTRIBUTES_DISABLE=1 COPYFILE_DISABLE=1 tar';
-    $configs{TARFLAGS} ||= 'cvf';
+    $configs{TARFLAGS} ||= 'cvzf';
 
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
     map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
