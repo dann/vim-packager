@@ -154,7 +154,6 @@ sub new {
         add_st \@main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
 
-
     new_section \@main => 'manifest';
     add_st \@main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Manifest=mkmanifest -e 'mkmanifest'|;
     add_st \@main => q|$(NOECHO) $(TOUCH) MANIFEST.SKIP|;

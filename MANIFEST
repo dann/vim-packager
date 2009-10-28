@@ -1,4 +1,4 @@
-bin/vimpkg
+bin/vim-packager
 Changes
 doc/META
 find-test.pl
