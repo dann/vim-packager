@@ -207,6 +207,12 @@ sub meta_section {
     my $meta = shift;
     my @section = ();
     map { add_macro \@section, uc($_) => $meta->{$_} } grep { ! ref $meta->{$_} } keys %$meta;
+
+    my $distname  = $meta->{name};
+    $distname =~ tr/._/--/;
+    $distname .= '-' . $meta->{version};
+    add_macro \@section , "DISTNAME" => $distname;
+
     return @section;
 }
 
