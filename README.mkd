@@ -158,7 +158,7 @@ to create your distribution
 
     new_plugin-0.1.tar.gz  # is out
 
-    $ make upload new_plugin-0.1.tar.gz  # XXX: not implement yet
+    $ make upload
 
     Uploading...Done
 
