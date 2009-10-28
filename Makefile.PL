@@ -6,29 +6,18 @@ author   q{Cornelius <cornelius.howl@gmail.com>};
 license  'perl';
 
 requires(
-    'YAML'                        => 0,
-    'App::CLI'                    => 0,
-    'Getopt::Long'                => 0,
-    'DateTime::Format::DateParse' => 0,
-    'File::Spec'                  => 0,
-    'File::Find'                  => 0,
-    'File::Path'                  => 0,
-    'Exporter::Lite'              => 0,
-    'LWP::Simple'                 => 0,
-    'Carp'                        => 0,
-    'Config'                      => 0,
-    'DateTime::Format::DateParse' => 0,
-    'Exporter::Lite'              => 0,
+    'App::CLI'                    => 0.08,
+    'Carp'                        => 1.11,
+    'DateTime::Format::DateParse' => 0.04,
+    'Exporter::Lite'              => 0.02,
     'File::Basename'              => 0,
     'File::Copy'                  => 0,
-    'File::Find'                  => 0,
-    'File::Path'                  => 0,
-    'File::Spec'                  => 0,
-    'Getopt::Long'                => 0,
+    'File::Find'                  => 1.14,
+    'File::Path'                  => 2.07,
+    'File::Spec'                  => 3.3,
+    'Getopt::Long'                => 2.38,
     'LWP::Simple'                 => 0,
-    'VIM::Packager'               => 0,
-    'YAML'                        => 0,
-    'App::CLI'                    => 0,
+    'YAML'                        => 0.70,
 );
     
 build_requires 'Test::More';
