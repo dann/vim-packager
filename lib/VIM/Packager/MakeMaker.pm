@@ -86,8 +86,10 @@ sub new {
     
     my %unsatisfied = $self->check_dependency( $meta );
 
+    my $filelist = $self->make_filelist();
+
     my @config_section = $self->config_section();
-    my @file_section   = $self->file_section();
+    my @file_section   = $self->file_section( $filelist );
 
 
     # XXX: -Ilib to dev
@@ -126,13 +128,22 @@ sub new {
     add_st \@main , q|$(NOECHO) $(TOUCH) install-deps|; # XXX: cur base path
 
     new_section \@main => 'link';
-    add_st \@main => q|$(NOECHO) $(NOOP)|;  # link vimlibs to runtime path of user
+    while( my ($src,$target) = each %$filelist ) {
+        add_st \@main => q|$(NOECHO) $(LN_S) | . "$src $target";
+    }
+
+
 
     new_section \@main => 'dist';
     add_st \@main => q|$(NOECHO) $(NOOP)|;
 
     new_section \@main => 'uninstall';
-    add_st \@main => q|$(NOECHO) $(NOOP)|;
+    for( values %$filelist ) {
+        add_st \@main => q|$(RM_F) | . $_ ;
+    }
+
+
+
 
     new_section \@main => 'upload';
     add_st \@main => q|$(NOECHO) $(NOOP)|;
@@ -180,7 +191,7 @@ sub config_section {
     $configs{TOUCH}    ||= 'touch';
     $configs{ECHO}     ||= 'echo';
     $configs{ECHO_N}   ||= 'echo -n';
-    $configs{RM_F}     ||= "rm -f";
+    $configs{RM_F}     ||= "rm -vf";
     $configs{RM_RF}    ||= "rm -rf";
     $configs{TOUCH}    ||= "touch";
     $configs{TEST_F}   ||= "test -f";
@@ -190,6 +201,7 @@ sub config_section {
     $configs{FALSE}    ||= 'false';
     $configs{TRUE}     ||= 'true';
     $configs{NOOP}     ||= '$(TRUE)';
+    $configs{LN_S}     ||= 'ln -s';
 
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
     map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
@@ -198,10 +210,10 @@ sub config_section {
 
 sub file_section {
     my $self = shift;
+    my $filelist = shift;
     my $meta = $self->meta;
 
     my @section  = ();
-    my $filelist = $self->make_filelist();
 
     my @to_install = keys %$filelist;
 
