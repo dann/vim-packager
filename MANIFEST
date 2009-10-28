@@ -31,7 +31,6 @@ MANIFEST
 MANIFEST.bak
 MANIFEST.SKIP
 META.yml
-pm_to_blib
 README.mkd
 t/00-installed-record.t
 t/00-load.t

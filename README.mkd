@@ -119,7 +119,7 @@ fill your 'VIMMETA' file
         # this will be detected when you run 'vim-packager build'
         # and depdencies will be installed when you type 'make'
 
-        autocomplpop.vim
+        somewhat.vim
             | autoload/acp.vim | [url]
             | plugin/acp.vim   | [url2]
 
