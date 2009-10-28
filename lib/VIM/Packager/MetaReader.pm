@@ -146,6 +146,8 @@ sub __type {
 sub __version_from {
     my ($self,$version_file) = @_;
 
+    $self->meta->{version_from} = $version_file;
+
     open FH, "<" , $version_file;
     my @lines = <FH>;
     close FH;

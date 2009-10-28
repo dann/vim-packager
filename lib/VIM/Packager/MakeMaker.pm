@@ -13,6 +13,10 @@ use File::Find;
 our $VERSION = 0.0.1;
 my  $VERBOSE = 1;
 
+use constant { 
+    LIB => 'vimlib',
+    META => 'VIMMETA',
+};
 
 =head1 SYNOPSIS
 
@@ -164,7 +168,6 @@ sub new {
 
 
 
-
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
             qw(pure_install install-deps);
@@ -234,6 +237,9 @@ sub file_section {
     my @section  = ();
 
     my @to_install = keys %$filelist;
+
+    add_macro \@section , VIMLIB => LIB;
+    add_macro \@section , VIMMETA => VIMMETA;
 
     add_macro \@section , TO_INST_VIMS => multi_line @to_install ;
 
@@ -358,11 +364,13 @@ sub init_vim_dir_macro {
     return %dir_configs;
 }
 
+
 sub make_filelist {
     my $self = shift;
 
     my %install = ();
-    my $base_prefix = 'vimlib';
+    my $base_prefix = LIB;
+
     # my $prefix = File::Spec->join($ENV{HOME} , '.vim');
     my $prefix = '$(VIM_BASEDIR)';
     File::Find::find( sub {
@@ -456,7 +464,8 @@ sub init_meta {
     # read meta_reader file
     my $meta_reader = VIM::Packager::MetaReader->new;
 
-    my $file = $meta_reader->get_meta_file();
+    # my $file = $meta_reader->get_meta_file();
+    my $file = META;
     die 'Can not found META file' unless -e $file;
 
     open my $fh , "<" , $file ;
