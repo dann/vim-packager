@@ -173,7 +173,7 @@ sub new {
     # XXX: prompt user to uninstall depedencies
 
     new_section \@main => 'upload';
-	add_noop_st \@main;
+    add_st \@main => q||;
 
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
