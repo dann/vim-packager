@@ -173,7 +173,7 @@ sub new {
     # XXX: prompt user to uninstall depedencies
 
     new_section \@main => 'upload' , qw(dist);
-    add_st \@main => q|$(NOECHO) $(FULLPERL) -MVIM::Packager::Uploader=upload -e 'upload()' |
+    add_st \@main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Uploader=upload -e 'upload()' |
                 . multi_line qw|$(PWD)/$(DISTNAME).tar.gz $(VIM_VERSION) $(VERSION) $(SCRIPT_ID)|;
 
     new_section \@main => 'clean';
