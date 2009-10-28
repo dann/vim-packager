@@ -1,7 +1,6 @@
 bin/vim-packager
 Changes
 doc/META
-find-test.pl
 ignore.txt
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -25,11 +24,14 @@ lib/VIM/Packager/MakeMaker.pm
 lib/VIM/Packager/Manifest.pm
 lib/VIM/Packager/MetaReader.pm
 lib/VIM/Packager/MetaWriter.pm
+lib/VIM/Packager/Uploader.pm
 lib/VIM/Packager/Utils.pm
 Makefile.PL
 MANIFEST
+MANIFEST.bak
 MANIFEST.SKIP
 META.yml
+pm_to_blib
 README.mkd
 t/00-installed-record.t
 t/00-load.t
@@ -39,4 +41,5 @@ t/pod-coverage.t
 t/pod.t
 Vim-META.spec
 VIMMETA
+VIMMETA.old
 VIMMETA.yml
