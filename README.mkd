@@ -44,6 +44,17 @@ for some reason , you want the scripts be linked to your vim runtime path.
 
     $ make dist
 
+### To upload to vim.org
+
+you need to specify script\_id in your meta file ( VIMMETA ).
+
+then run vim-packager build to get your Makefile. then type command below to
+upload your distribution:
+
+    $ make dist
+
+    $ make upload
+
 ### To create a vim package from existed scripts
 
     $ cd your_plugin/
