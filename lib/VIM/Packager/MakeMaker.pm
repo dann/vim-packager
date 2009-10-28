@@ -167,11 +167,8 @@ sub new {
 
     # XXX: prompt user to uninstall depedencies
 
-
     new_section \@main => 'upload';
 	add_noop_st \@main;
-
-
 
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
@@ -450,6 +447,10 @@ sub full_setup {
     );
 }
 
+
+# XXX:
+# parse version from vim runtime path files
+# neeed to find a way to do it
 sub parse_version {
 
 }
