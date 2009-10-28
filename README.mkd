@@ -13,22 +13,31 @@ to create a new plugin:
 fill your 'META' file
 
     =name       new_plugin
+
     =author     Cornelius (cornelius.howl@gmail.com)
+
     =version    0.1
+
     =version    plugin/new_plugin.vim   # extract version infomation from this file
+
     =type       syntax
+
     =vim_version >= 7.0
+
     =dependency
+
         autocomplpop.vim > 0.3
         rainbow.vim      >= 1.2
 
     =script
+
         bin/parser
         bin/template_generator
 
     =repository git://....../
 
-    $ vim-package manifest
+
+    $ vimpkg manifest
 
             vimlib/syntax/aaa.vim
             vimlib/plugin/aaa.vim
@@ -36,13 +45,13 @@ fill your 'META' file
 
 then update your 'MANIFEST' file
 
-    $ vim-package build
+    $ vimpkg build
 
-    $ vim-package dist
+    $ vimpkg dist
 
     new_plugin-0.1.tar.gz  # is out
 
-    $ vim-package upload new_plugin-0.1.tar.gz
+    $ vimpkg upload new_plugin-0.1.tar.gz
 
     Uploading...Done
 
