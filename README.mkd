@@ -3,7 +3,7 @@ VIM::Packager ABSTRACT
 
 to create a new plugin:
 
-    $ vimpkg create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
+    $ vim-packager create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
 
     new_plugin/
     new_plugin/vimlib/plugin/
@@ -37,7 +37,7 @@ fill your 'META' file
     =repository git://....../
 
 
-    $ vimpkg manifest
+    $ vim-packager manifest
 
             vimlib/syntax/aaa.vim
             vimlib/plugin/aaa.vim
@@ -45,13 +45,13 @@ fill your 'META' file
 
 then update your 'MANIFEST' file
 
-    $ vimpkg build
+    $ vim-packager build
 
-    $ vimpkg dist
+    $ vim-packager dist
 
     new_plugin-0.1.tar.gz  # is out
 
-    $ vimpkg upload new_plugin-0.1.tar.gz
+    $ vim-packager upload new_plugin-0.1.tar.gz
 
     Uploading...Done
 
@@ -63,7 +63,7 @@ you can also define your '.IGNORE' file
 VIM::Packager PACKAGE INSTALLATION
 ==================================
 
-    $ vimpkg build
+    $ vim-packager build
 
 the build action, which reads 'META' file , and convert meta information into META.yml
     or read 'META.yml' file
@@ -87,7 +87,7 @@ FOR AN EXISTED VIM DISTRIBUTION
         doc/
         README
 
-    $ vimpkg init
+    $ vim-packager init
 
 which generates
 
@@ -103,7 +103,7 @@ dependency (user should define it by self)
 
 your should update your package information from META file
 
-    $ vimpkg build 
+    $ vim-packager build 
 
     $ make install
 
@@ -130,7 +130,7 @@ BASIC REQUIREMENT
     "
     "=LICENSE MIT
     "
-    "=REPOSITORY http://github.com/c9s/p5-vimpkg
+    "=REPOSITORY http://github.com/c9s/p5-vim-packager
     "
     "=REVISION r4356
     "
@@ -211,16 +211,16 @@ perldoc command.
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=vimpkg
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=vim-packager
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/vimpkg
+        http://annocpan.org/dist/vim-packager
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/vimpkg
+        http://cpanratings.perl.org/d/vim-packager
 
     Search CPAN
-        http://search.cpan.org/dist/vimpkg/
+        http://search.cpan.org/dist/vim-packager/
 
 
 COPYRIGHT AND LICENCE
