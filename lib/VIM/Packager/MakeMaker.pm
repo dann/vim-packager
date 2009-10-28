@@ -25,8 +25,8 @@ my  $VERBOSE = 1;
 
 sub new { 
     my $self = bless {},shift;
-    my $meta = $self->init_meta();
 
+    my $meta = $self->init_meta();
 
     {
         my $info = vim_version_info();
@@ -50,6 +50,8 @@ sub new {
     }
 
     my @result = ();
+    local *makefile  = \@result;
+
     push @result, <<'END';
 # VIM::Packager::MakeMaker
 #
@@ -97,22 +99,23 @@ END
     push @result,"TO_INST_BIN = " . join( " \\\n\t", keys %bin_to_runtime );
     push @result,"BIN_TO_RUNT = " . join( " \\\n\t", %bin_to_runtime );
 
-    push @result , qq|all : install-deps |;
+
 
     # XXX: -Ilib to dev
+    new_section *makefile , "install" => qw(pure_install install-deps);
+	add_st *makefile => q|$(NOECHO) $(NOOP)|;
 
-    push @result , qq|install : install-deps |;
-    push @result , qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
-                   . qq| -e 'install()' \$(VIMS_TO_RUNT) |;
 
-    push @result , qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
-                   . qq| -e 'install()' \$(BIN_TO_RUNT) |;
-    # push @result, qq|\t\t\$(NOECHO) touch .exist|; # XXX: cur base path
+    new_section *makefile => "pure_install";
 
-    # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
+    add_st *makefile => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+                 . q| -e 'install()' $(VIMS_TO_RUNT) |;
+    add_st *makefile => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+                 . q| -e 'install()' $(BIN_TO_RUNT) |;
+    add_st *makefile => q|$(NOECHO) $(TOUCH) install|;
 
     # make dependency 
-    push @result,"install-deps : ";
+    new_section *makefile => "install-deps";
 
     my @pkgs_nonversion = grep { ref($unsatisfied{$_}) eq 'ARRAY' } sort keys %unsatisfied;
     for my $pkgname ( @pkgs_nonversion ) {
@@ -132,11 +135,18 @@ END
     }
     # push @result, qq|\t\t\$(NOECHO) touch |; # XXX: cur base path
 
+
+    push @result , q|clean : |;
+    push @result , qq|\t\t\$(RM)|;
+
     print STDOUT "Write to Makefile.\n";
     open my $fh , ">" , 'Makefile';
     print $fh join("\n",@result);
     close $fh;
 }
+
+
+
 
 
 sub get_installed_pkgs {
@@ -412,5 +422,15 @@ sub find_perl {
     return undef;
 }
 
+sub new_section {
+    my ($self, $name , @deps ) = @_;
+    push @{ $self->{result} } , qq|$name : | . join( " ", @deps );
+}
+
+sub add_st {
+    my $self = shift;
+    my $st = shift;
+    push @{ $self->{result} } , qq|\t\t| . $st;
+}
 
 1;
