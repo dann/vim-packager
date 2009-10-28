@@ -23,6 +23,18 @@ my  $VERBOSE = 1;
 
 =cut
 
+sub new_section {
+    my $ref = shift;
+    my ( $name , @deps ) = @_;
+    push @{ $ref } , qq|$name : | . join( " ", @deps );
+}
+
+sub add_st {
+    my $ref = shift;
+    my $st = shift;
+    push @{ $ref } , qq|\t\t| . $st;
+}
+
 sub new { 
     my $self = bless {},shift;
 
@@ -50,7 +62,6 @@ sub new {
     }
 
     my @result = ();
-    local *makefile  = \@result;
 
     push @result, <<'END';
 # VIM::Packager::MakeMaker
@@ -102,20 +113,20 @@ END
 
 
     # XXX: -Ilib to dev
-    new_section *makefile , "install" => qw(pure_install install-deps);
-	add_st *makefile => q|$(NOECHO) $(NOOP)|;
+    new_section \@result => "install" => qw(pure_install install-deps) ;
+	add_st      \@result => q|$(NOECHO) $(NOOP)|;
 
 
-    new_section *makefile => "pure_install";
+    new_section \@result => "pure_install";
 
-    add_st *makefile => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+    add_st \@result => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(VIMS_TO_RUNT) |;
-    add_st *makefile => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
+    add_st \@result => q|$(NOECHO) $(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(BIN_TO_RUNT) |;
-    add_st *makefile => q|$(NOECHO) $(TOUCH) install|;
+    add_st \@result => q|$(NOECHO) $(TOUCH) install|;
 
     # make dependency 
-    new_section *makefile => "install-deps";
+    new_section \@result => "install-deps";
 
     my @pkgs_nonversion = grep { ref($unsatisfied{$_}) eq 'ARRAY' } sort keys %unsatisfied;
     for my $pkgname ( @pkgs_nonversion ) {
@@ -422,15 +433,5 @@ sub find_perl {
     return undef;
 }
 
-sub new_section {
-    my ($self, $name , @deps ) = @_;
-    push @{ $self->{result} } , qq|$name : | . join( " ", @deps );
-}
-
-sub add_st {
-    my $self = shift;
-    my $st = shift;
-    push @{ $self->{result} } , qq|\t\t| . $st;
-}
 
 1;
