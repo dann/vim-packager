@@ -150,7 +150,7 @@ sub new {
     }
 
     new_section \@main => 'dist';
-    add_st \@main => q|$(TAR) $(TARFLAGS) dist.tar.gz $(TO_INST_VIMS)|;
+    add_st \@main => q|$(TAR) $(TARFLAGS) $(DISTNAME).tar.gz $(TO_INST_VIMS)|;
 	add_noop_st \@main;
 
     new_section \@main => 'help';
@@ -245,7 +245,7 @@ sub config_section {
     $configs{LN_S}     ||= 'ln -sv';
     $configs{PWD}      ||= '`pwd`';
 
-    $configs{TAR} ||= 'TAR = COPY_EXTENDED_ATTRIBUTES_DISABLE=1 COPYFILE_DISABLE=1 tar';
+    $configs{TAR} ||= 'COPY_EXTENDED_ATTRIBUTES_DISABLE=1 COPYFILE_DISABLE=1 tar';
     $configs{TARFLAGS} ||= 'cvzf';
 
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
