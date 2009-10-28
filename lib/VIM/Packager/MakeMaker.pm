@@ -172,8 +172,9 @@ sub new {
 
     # XXX: prompt user to uninstall depedencies
 
-    new_section \@main => 'upload';
-    add_st \@main => q||;
+    new_section \@main => 'upload' , qw(dist);
+    add_st \@main => q|$(NOECHO) $(FULLPERL) -MVIM::Packager::Uploader=upload -e 'upload()' |
+                . multi_line qw|$(PWD)/$(DISTNAME).tar.gz $(VIM_VERSION) $(VERSION) $(SCRIPT_ID)|;
 
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
@@ -234,7 +235,10 @@ sub meta_section {
     my $distname  = $meta->{name};
     $distname =~ tr/._/--/;
     $distname .= '-' . $meta->{version};
-    add_macro \@section , "DISTNAME" => $distname;
+    add_macro \@section , DISTNAME => $distname;
+
+    # XXX: op skipeed
+    add_macro \@section , VIM_VERSION => $meta->{vim_version}->{version};
 
     return @section;
 }
