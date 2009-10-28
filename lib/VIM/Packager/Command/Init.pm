@@ -3,9 +3,14 @@ use warnings;
 use strict;
 use base qw(App::CLI::Command);
 
-sub options { 
-
-
+sub options {
+    (
+        'n|name'    => 'naame',
+        'v|verbose' => 'verbose',
+        't|type'    => 'type',
+        'a|author'  => 'author',
+        'e|email'   => 'email',
+    );
 }
 
 sub run {
