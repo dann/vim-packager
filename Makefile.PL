@@ -22,7 +22,7 @@ requires(
     
 build_requires 'Test::More';
 
-install_script 'bin/vimpkg';
+install_script 'bin/vim-packager';
 auto_install;
 
 WriteAll;
