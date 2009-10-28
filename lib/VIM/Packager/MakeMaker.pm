@@ -224,6 +224,9 @@ sub config_section {
     $configs{LN_S}     ||= 'ln -sv';
     $configs{PWD}      ||= '`pwd`';
 
+    $configs{TAR} ||= 'TAR = COPY_EXTENDED_ATTRIBUTES_DISABLE=1 COPYFILE_DISABLE=1 tar';
+    $configs{TARFLAGS} ||= 'cvf';
+
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
     map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
     return @section;
