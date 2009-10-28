@@ -9,11 +9,11 @@ VIM::Packager
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
@@ -21,7 +21,7 @@ our $VERSION = '0.04';
 
 =head1 DESCRIPTION
 
-** UNDER DEVELOPING **
+** TESTING **
 
 =head1 FUNCTIONS
 
