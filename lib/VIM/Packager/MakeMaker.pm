@@ -162,9 +162,21 @@ sub config_section {
     my $perl = find_perl();
     die "Can not found perl." unless $perl;
 
-    $configs{ FULLPERL } = $perl;
-    $configs{ NOECHO } = '@';
-    $configs{ TOUCH }  = `which touch`;
+    $configs{FULLPERL} ||= $perl;
+    $configs{NOECHO}   ||= '@';
+    $configs{TOUCH}    ||= 'touch';
+    $configs{ECHO}     ||= 'echo';
+    $configs{ECHO_N}   ||= 'echo -n';
+    $configs{RM_F}     ||= "rm -f";
+    $configs{RM_RF}    ||= "rm -rf";
+    $configs{TOUCH}    ||= "touch";
+    $configs{TEST_F}   ||= "test -f";
+    $configs{CP}       ||= "cp";
+    $configs{MV}       ||= "mv";
+    $configs{CHMOD}    ||= "chmod";
+    $configs{FALSE}    ||= 'false';
+    $configs{TRUE}     ||= 'true';
+    $configs{NOOP}     ||= '$(TRUE)';
 
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
     map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
