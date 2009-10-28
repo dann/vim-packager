@@ -161,7 +161,6 @@ sub config_section {
 
     my $perl = find_perl();
     die "Can not found perl." unless $perl;
-    # print STDOUT "Found perl: $perl\n";
 
     $configs{ FULLPERL } = $perl;
     $configs{ NOECHO } = '@';
