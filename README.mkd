@@ -1,8 +1,82 @@
+INSTALLATION
+============
+
+    $ perl Makefile.PL
+    $ sudo make             # you might need sudo if you have to install the dependencies.
+    $ sudo make install
+
+
 VIM::Packager ABSTRACT
 =======================
 
-to create a new plugin:
+### To install a vim package
 
+first thing, we need translate meta file (VIMMETA) into Makefile. just type:
+
+    $ vim-packager build
+
+this will detect dependencies of this vim script package and generate Makefile for you.
+
+to install dependencies:
+
+    $ make 
+
+to install this package:
+
+    $ make install
+
+to clean up files 
+
+    $ make clean
+
+### To uninstall a vim package 
+
+    $ make uninstall
+
+### To link scripts in vimlib to your vim runtime path (~/.vim/)
+
+for some reason , you want the scripts be linked to your vim runtime path.
+    ( useful when you are developing vim scripts , you dont need to install them everytime after you modified them )
+
+    $ make link
+
+### To distribute your vim package
+
+    $ make dist
+
+### To create a vim package from existed scripts
+
+    $ cd your_plugin/
+
+    $ vim-packager init
+
+    # this should create vimlib/ directory and generate a basic VIMMETA file
+    # for you.
+
+mv your script (\*.vim) into vimlib/plugin ( if it's plugin )
+
+    $ mv *.vim vimlib/plugin/ 
+
+update your VIMMETA file. ( see 'To create a vim package' section below )
+
+then transalte our meta file into Makefile:
+
+    $ vim-packager build 
+
+update manifest:
+
+    $ make manifest
+
+    # for those files you dont want to include in your distribution,
+    # just create MANIFEST.SKIP
+
+to create package tarball file:
+
+    $ make dist
+
+### To create a vim package 
+
+    # XXX:  not implmenet yet
     $ vim-packager create --name=new_plugin --type plugin --author=Cornelius --email=cornelius.howl@DELETE-ME.gmail.com
 
     new_plugin/
@@ -10,13 +84,11 @@ to create a new plugin:
     new_plugin/vimlib/doc/
     new_plugin/vimlib/META
 
-fill your 'META' file
+fill your 'VIMMETA' file
 
     =name       new_plugin
 
     =author     Cornelius (cornelius.howl@gmail.com)
-
-    =version    0.1
 
     =version    plugin/new_plugin.vim   # extract version infomation from this file
 
@@ -29,50 +101,60 @@ fill your 'META' file
         autocomplpop.vim > 0.3
         rainbow.vim      >= 1.2
 
+
+        # for depended scripts which is not on archive network (not existed yet)
+        # we can specify an url to retrieve.
+        # for something like below, check if file exists , if not then download it from [url]
+        # this will be detected when you run 'vim-packager build'
+        # and depdencies will be installed when you type 'make'
+
+        autocomplpop.vim
+            | autoload/acp.vim | [url]
+            | plugin/acp.vim   | [url2]
+
     =script
+
+        # scripts to install , those files will be installed to ~/.vim/bin/
+        # this could be specified in future.
 
         bin/parser
         bin/template_generator
 
     =repository git://....../
 
+        # your repository url 
 
-    $ vim-packager manifest
 
-            vimlib/syntax/aaa.vim
-            vimlib/plugin/aaa.vim
-            vimlib/plugin/bbb.vim
+then we can translate meta file (VIMMETA) into Makefile. just type:
+
+    $ vim-packager build
+
+to install dependencies:
+
+    $ make 
+
+to install this package:
+
+    $ make install
 
 then update your 'MANIFEST' file
 
-    $ vim-packager build
+    $ make manifest
 
-    $ vim-packager dist
+to create your distribution
+
+    $ make dist
 
     new_plugin-0.1.tar.gz  # is out
 
-    $ vim-packager upload new_plugin-0.1.tar.gz
+    $ make upload new_plugin-0.1.tar.gz  # XXX: not implement yet
 
     Uploading...Done
 
-you can also define your '.IGNORE' file
+you can also define your 'MANIFEST.SKIP' file
 
-        .git*
+        .git\*
         test-
-
-VIM::Packager PACKAGE INSTALLATION
-==================================
-
-    $ vim-packager build
-
-the build action, which reads 'META' file , and convert meta information into META.yml
-    or read 'META.yml' file
-
-then read 'manifest' file list
-then generate Makefile
-
-    $ sudo make install
-
 
 FOR AN EXISTED VIM DISTRIBUTION
 ===============================
