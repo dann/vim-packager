@@ -176,6 +176,7 @@ sub new {
     new_section \@main => 'clean';
     add_st \@main      => multi_line q|$(RM)|,
             qw(pure_install install-deps);
+    add_st \@main => q|$(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD)|;
 
     print STDOUT "Write to Makefile.\n";
     open my $fh , ">" , 'Makefile';
@@ -248,6 +249,9 @@ sub config_section {
     $configs{NOOP}     ||= '$(TRUE)';
     $configs{LN_S}     ||= 'ln -sv';
     $configs{PWD}      ||= '`pwd`';
+
+    $configs{FIRST_MAKEFILE} ||= 'Makefile';
+    $configs{MAKEFILE_OLD}   ||= 'Makefile.old';
 
     $configs{TAR} ||= 'COPY_EXTENDED_ATTRIBUTES_DISABLE=1 COPYFILE_DISABLE=1 tar';
     $configs{TARFLAGS} ||= 'cvzf';
