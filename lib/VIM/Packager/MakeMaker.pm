@@ -107,7 +107,7 @@ END
 
     push @result , qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install|
                    . qq| -e 'install()' \$(BIN_TO_RUNT) |;
-    push @result, qq|\t\t\$(NOECHO) touch .exist|; # XXX: cur base path
+    # push @result, qq|\t\t\$(NOECHO) touch .exist|; # XXX: cur base path
 
     # push @result, "install : \n\t\t echo \$(VIMS_TO_RUNT)";
 
@@ -130,9 +130,7 @@ END
         push @result, qq|\t\t\$(NOECHO) \$(FULLPERL) -Ilib -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
     }
-    push @result, qq|\t\t\$(NOECHO) touch .exist|; # XXX: cur base path
-
-
+    # push @result, qq|\t\t\$(NOECHO) touch |; # XXX: cur base path
 
     print STDOUT "Write to Makefile.\n";
     open my $fh , ">" , 'Makefile';
