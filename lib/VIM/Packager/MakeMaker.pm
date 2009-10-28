@@ -149,6 +149,12 @@ sub new {
         add_st \@main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
 
+    new_section \@main => 'link-force';
+    while( my ($src,$target) = each %$filelist ) {
+        add_st \@main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
+    }
+
+
     new_section \@main => 'manifest';
     add_st \@main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Manifest=mkmanifest -e 'mkmanifest'|;
     add_st \@main => q|$(NOECHO) $(TOUCH) MANIFEST.SKIP|;
@@ -261,6 +267,7 @@ sub config_section {
     $configs{TRUE}     ||= 'true';
     $configs{NOOP}     ||= '$(TRUE)';
     $configs{LN_S}     ||= 'ln -sv';
+    $configs{LN_SF}     ||= 'ln -svf';
     $configs{PWD}      ||= '`pwd`';
 
     $configs{FIRST_MAKEFILE} ||= 'Makefile';
