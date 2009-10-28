@@ -137,12 +137,14 @@ sub new {
     new_section \@main => 'dist';
     add_st \@main => q|$(NOECHO) $(NOOP)|;
 
+
+    new_section \@main => 'help';
+    add_st \@main => q|perldoc VIM::Packager|;
+
     new_section \@main => 'uninstall';
     for( values %$filelist ) {
         add_st \@main => q|$(RM_F) | . $_ ;
     }
-
-
 
 
     new_section \@main => 'upload';
