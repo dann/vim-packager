@@ -149,6 +149,10 @@ sub new {
         add_st \@main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
 
+
+    new_section \@main => 'manifest';
+    add_noop_st \@main;
+
     new_section \@main => 'dist';
     add_st \@main => q|$(TAR) $(TARFLAGS) $(DISTNAME).tar.gz $(TO_INST_VIMS)|;
 	add_noop_st \@main;
