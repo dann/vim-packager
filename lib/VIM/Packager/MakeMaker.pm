@@ -129,7 +129,7 @@ sub new {
 
     new_section \@main => 'link';
     while( my ($src,$target) = each %$filelist ) {
-        add_st \@main => q|$(NOECHO) $(LN_S) | . "$src $target";
+        add_st \@main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
 
 
@@ -201,7 +201,8 @@ sub config_section {
     $configs{FALSE}    ||= 'false';
     $configs{TRUE}     ||= 'true';
     $configs{NOOP}     ||= '$(TRUE)';
-    $configs{LN_S}     ||= 'ln -s';
+    $configs{LN_S}     ||= 'ln -sv';
+    $configs{PWD}      ||= '`pwd`';
 
     map { add_macro \@section, $_ => $configs{$_} } sort keys %configs;
     map { add_macro \@section, $_ => $dir_configs{$_} } sort keys %dir_configs;
