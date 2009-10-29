@@ -15,7 +15,7 @@ my  $VERBOSE = 1;
 
 use constant {
     LIB  => 'vimlib',
-    META => 'VIMMETA',
+    META_FILES => ['VIMMETA','META','VIMMETA.yml'],
 };
 
 =head1 SYNOPSIS
@@ -27,7 +27,12 @@ use constant {
 
 =cut
 
-
+sub find_meta_file {
+    my $files = META_FILES;
+    for ( @$files ) {
+        return $_ if -e $_;
+    }
+}
 
 sub multi_line {
     my @items = @_;
@@ -296,7 +301,7 @@ sub file_section {
     my @to_install = keys %$filelist;
 
     add_macro \@section , VIMLIB => LIB;
-    add_macro \@section , VIMMETA => META;
+    add_macro \@section , VIMMETA => find_meta_file();
 
     add_macro \@section , TO_INST_VIMS => multi_line @to_install ;
 
@@ -526,7 +531,7 @@ sub init_meta {
     my $meta_reader = VIM::Packager::MetaReader->new;
 
     # my $file = $meta_reader->get_meta_file();
-    my $file = META;
+    my $file = find_meta_file();
     die 'Can not found META file' unless -e $file;
 
     open my $fh , "<" , $file ;
