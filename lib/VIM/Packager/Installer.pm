@@ -68,28 +68,103 @@ sub install_deps_remote {
         $ua->timeout( 10 );
         $ua->env_proxy();
 
+        my $content;
         my $response = $ua->get( $from );
         if( $response->is_success ) {
-            my $content = $response->decoded_content;
-            open FH , ">" , $target;
-            print FH $content;
-            close FH;
+            $content = $response->decoded_content;
+
+
             print "[ OK ]\n";
         }
         else {
             print "[ FAIL ]\n";
             print $response->status_line;
         }
-    }
 
+
+        # if target exists , then we should do a diff
+        if ( $content and -e $target ) {
+            my @src = split /\n/,$content;
+
+            open FH_T , "<", $target;
+            my @target = <FH_T>;
+            chomp @target;
+            close FH_T;
+
+            my $diff = $self->diff_base_install( \@src , \@target );
+            if ( $diff ) {
+                my $ans = $self->prompt_for_different( $target );
+                while( $ans =~ /d/i ) {
+                    print "Diff:\n";
+                    print $diff;
+                    $ans = $self->prompt_for_different( $target );
+                }
+                if( $ans =~ /r/i ) {
+                    # do replace
+                    open RH,">",$target;
+                    print RH $content;
+                    close RH;
+                    print "$target replaced\n";
+                }
+                elsif ( $ans =~ /s/i ) {
+                    # do nothing
+                    print "Skipped\n";
+                }
+            }
+        }
+        elsif ( $content and ! -e $target ) {
+            open RH,">",$target;
+            print RH $content;
+            close RH;
+            print "$target installed\n";
+        }
+
+
+    }
+}
+
+sub prompt_for_different {
+    my $self = shift;
+    my $target = shift;
+
+    print "Your installed $target is different from which you just downloaded.\n";
+    print "(Replace / Diff / Merge / Skip) it ? (r/d/m/s) ";
+    my $ans = <STDIN>;
+    chomp $ans;
+    return $ans;
 }
 
 
 sub diff_base_install {
-    my ($self,$from,$to) = @_;
+    my ($self,$src_lines,$to_lines) = @_;
     require Algorithm::Diff;
 
+    my $diff = Algorithm::Diff->new( $src_lines , $to_lines );
+    $diff->Base(1);
+    
+    my $result = "";
+    while(  $diff->Next()  ) {
+        next   if  $diff->Same();
 
+        $is_different++;
+        my $sep = '';
+
+        if(  ! $diff->Items(2)  ) {
+            $result .= sprintf "%d,%dd%d\n", $diff->Get(qw( Min1 Max1 Max2 ));
+        } 
+        elsif(  ! $diff->Items(1)  ) {
+            $result .= printf "%da%d,%d\n", $diff->Get(qw( Max1 Min2 Max2 ));
+        } 
+        else {
+            $sep = "---\n";
+            $result .= printf "%d,%dc%d,%d\n", $diff->Get(qw( Min1 Max1 Min2 Max2 ));
+        }  
+        $result .= "< $_\n"   for  $diff->Items(1);
+        $result .= $sep;
+        $result .= "> $_\n"   for  $diff->Items(2);
+    }
+
+    return $result ? $result : undef;
 }
 
 sub install {

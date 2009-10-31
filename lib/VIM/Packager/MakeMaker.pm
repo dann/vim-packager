@@ -264,7 +264,6 @@ sub config_section {
     $configs{ECHO_N}   ||= 'echo -n';
     $configs{RM_F}     ||= "rm -vf";
     $configs{RM_RF}    ||= "rm -rf";
-    $configs{TOUCH}    ||= "touch";
     $configs{TEST_F}   ||= "test -f";
     $configs{CP}       ||= "cp";
     $configs{MV}       ||= "mv";
