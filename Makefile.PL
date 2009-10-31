@@ -16,7 +16,7 @@ requires(
     'File::Path'                  => 2.07,
     'File::Spec'                  => 3.3,
     'Getopt::Long'                => 2.38,
-    'LWP::Simple'                 => 0,
+    'LWP::UserAgent'                 => 0,
     'YAML'                        => 0.70,
 );
 

@@ -39,7 +39,7 @@ sub install_deps {
 
 our $VERBOSE = $ENV{VERBOSE} ? 1 : 0;
 
-use LWP::Simple ();
+use LWP::UserAgent;
 sub install_deps_remote {
     my $package_name = shift @ARGV;
     my %install = @ARGV;
@@ -127,7 +127,7 @@ sub install_deps_remote {
 
 sub prompt_for_different {
     my $target = shift;
-
+    print "Can not find your installed script version. instead , we found the installed script.\n";
     print "Your installed $target is different from which you just downloaded.\n";
     print "(Replace / Diff / Merge / Skip) it ? (r/d/m/s) ";
     my $ans = <STDIN>;
