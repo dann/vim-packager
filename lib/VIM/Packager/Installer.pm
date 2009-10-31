@@ -88,21 +88,23 @@ sub install_deps_remote {
 
             open FH_T , "<", $target;
             my @target = <FH_T>;
-            chomp @target;
             close FH_T;
 
-            my $diff = $self->diff_base_install( \@src , \@target );
+            chomp @target;
+            chomp @src;
+
+            my $diff = diff_base_install( \@src , \@target );
             if ( $diff ) {
-                my $ans = $self->prompt_for_different( $target );
+                my $ans = prompt_for_different( $target );
                 while( $ans =~ /d/i ) {
                     print "Diff:\n";
                     print $diff;
-                    $ans = $self->prompt_for_different( $target );
+                    $ans = prompt_for_different( $target );
                 }
                 if( $ans =~ /r/i ) {
                     # do replace
                     open RH,">",$target;
-                    print RH $content;
+                    print RH join("\n",@src);
                     close RH;
                     print "$target replaced\n";
                 }
@@ -124,7 +126,6 @@ sub install_deps_remote {
 }
 
 sub prompt_for_different {
-    my $self = shift;
     my $target = shift;
 
     print "Your installed $target is different from which you just downloaded.\n";
@@ -136,7 +137,7 @@ sub prompt_for_different {
 
 
 sub diff_base_install {
-    my ($self,$src_lines,$to_lines) = @_;
+    my ($src_lines,$to_lines) = @_;
     require Algorithm::Diff;
 
     my $diff = Algorithm::Diff->new( $src_lines , $to_lines );
@@ -146,18 +147,17 @@ sub diff_base_install {
     while(  $diff->Next()  ) {
         next   if  $diff->Same();
 
-        $is_different++;
         my $sep = '';
 
         if(  ! $diff->Items(2)  ) {
             $result .= sprintf "%d,%dd%d\n", $diff->Get(qw( Min1 Max1 Max2 ));
         } 
         elsif(  ! $diff->Items(1)  ) {
-            $result .= printf "%da%d,%d\n", $diff->Get(qw( Max1 Min2 Max2 ));
+            $result .= sprintf "%da%d,%d\n", $diff->Get(qw( Max1 Min2 Max2 ));
         } 
         else {
             $sep = "---\n";
-            $result .= printf "%d,%dc%d,%d\n", $diff->Get(qw( Min1 Max1 Min2 Max2 ));
+            $result .= sprintf "%d,%dc%d,%d\n", $diff->Get(qw( Min1 Max1 Min2 Max2 ));
         }  
         $result .= "< $_\n"   for  $diff->Items(1);
         $result .= $sep;
