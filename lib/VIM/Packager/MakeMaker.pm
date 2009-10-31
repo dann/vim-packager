@@ -121,7 +121,6 @@ sub new {
                  . q| -e 'install()' $(VIMS_TO_RUNT) |;
     add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(BIN_TO_RUNT) |;
-    add_st \@main => q|$(NOECHO) $(TOUCH) pure_install|;
 
     # XXX: should download the dependency and compare what we downloaded
     # before (from schwern)
