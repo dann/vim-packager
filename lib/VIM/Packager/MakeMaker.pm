@@ -240,13 +240,10 @@ END
     for my $s ( @$sections ) {
         my $n = (keys %$s)[0];
         my $list = $s->{$n};
-        print $fh "\n";
-        print $fh "\n";
-        print $fh "\n";
+        print $fh "\n" for ( 1 .. 3 );
         print $fh sprintf("# -------- %s section ------\n" , $n );
         print $fh join("\n", @$list );
-        print $fh "\n";
-        print $fh "\n";
+        print $fh "\n" for ( 1 .. 2 );
     }
     close $fh;
     print "DONE\n";
