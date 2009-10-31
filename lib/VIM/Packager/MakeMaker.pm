@@ -94,11 +94,10 @@ sub new {
         check_manifest();
     }
 
-    my @main = ();
+    my $main =  [ ];
 
-    push @main, q|.PHONY: all install clean uninstall help upload link|;
+    push @$main, q|.PHONY: all install clean uninstall help upload link|;
     
-    my %unsatisfied = $self->check_dependency( $meta );
 
     my $filelist = $self->make_filelist();
 
@@ -106,35 +105,92 @@ sub new {
     my @config_section = $self->config_section();
     my @file_section   = $self->file_section( $filelist );
 
+    $self->section_all( $main );
+    $self->section_install( $main );
 
-    # XXX: -Ilib to dev
-    new_section \@main => "all" => qw(install-deps);
-	add_noop_st \@main;
+    # main install section
+    $self->section_pure_install( $main );
 
-    new_section \@main => "install" => qw(pure_install install-deps) ;
-	add_noop_st \@main;
+    # dependency section
+    $self->section_deps( $main );
+    $self->section_link( $filelist );
+
+    new_section $main => 'manifest';
+    add_st $main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Manifest=mkmanifest -e 'mkmanifest'|;
+    add_st $main => q|$(NOECHO) $(TOUCH) MANIFEST.SKIP|;
+
+    new_section $main => 'dist';
+    add_st $main => q|$(TAR) $(TARFLAGS) $(DISTNAME).tar.gz $(TO_INST_VIMS)|;
+	add_noop_st $main;
+
+    new_section $main => 'help';
+    add_st $main => q|perldoc VIM::Packager|;
+
+    new_section $main => 'uninstall';
+    for( values %$filelist ) {
+        add_st $main => q|$(RM_F) | . $_ ;
+    }
+
+    # XXX: prompt user to uninstall depedencies
+
+    new_section $main => 'upload' , qw(dist);
+    add_st $main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Uploader=upload -e 'upload()' |
+                . multi_line qw|$(PWD)/$(DISTNAME).tar.gz $(VIM_VERSION) $(VERSION) $(SCRIPT_ID)|;
+
+    new_section $main => 'clean';
+    add_st $main      => multi_line q|$(RM)|,
+            qw(pure_install install-deps);
+    add_st $main => q|$(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD)|;
 
 
-    new_section \@main => "pure_install";
+    $self->generate_makefile( [
+            { meta   => \@meta_section },
+            { config => \@config_section },
+            { file   => \@file_section },
+            { main   => $main } ] );
+}
 
-    add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
+
+
+
+sub section_all {
+    my $self = shift;
+    my $main = shift;
+    new_section $main => "all" => qw(install-deps);
+	add_noop_st $main;
+}
+
+sub section_install {
+    my $self = shift;
+    my $main = shift;
+    new_section $main => "install" => qw(pure_install install-deps) ;
+	add_noop_st $main;
+}
+
+sub section_pure_install {
+    my $self = shift;
+    my $main = shift;
+    new_section $main => "pure_install";
+
+    add_st $main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(VIMS_TO_RUNT) |;
-    add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
+    add_st $main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
                  . q| -e 'install()' $(BIN_TO_RUNT) |;
-
-    # XXX: should download the dependency and compare what we downloaded
-    # before (from schwern)
+}
 
 
-    # make dependency 
-    new_section \@main => "install-deps";
+sub section_deps {
+    my $self = shift;
+    my $main = shift;
 
+    new_section $main => "install-deps";
+    my %unsatisfied = $self->check_dependency( $self->meta );
     my @pkgs_nonversion = grep { ref($unsatisfied{$_}) eq 'ARRAY' } sort keys %unsatisfied;
     for my $pkgname ( @pkgs_nonversion ) {
         my @nonversion_params = map {  ( $_->{target} , $_->{from} ) } 
             map { @{ $unsatisfied{ $_ } } } $pkgname ;
 
-        add_st \@main => multi_line q|$(NOECHO) $(FULLPERL) $(PERLFLAGS)|
+        add_st $main => multi_line q|$(NOECHO) $(FULLPERL) $(PERLFLAGS)|
                     . qq| -MVIM::Packager::Installer=install_deps_remote |
                     . qq| -e 'install_deps_remote()' $pkgname | 
                     , @nonversion_params ;
@@ -143,53 +199,22 @@ sub new {
 
     my @pkgs_version = grep {  ref($unsatisfied{$_}) ne 'ARRAY' } sort keys %unsatisfied;
     if( @pkgs_version > 0 ) {
-        add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install_deps  |
+        add_st $main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
     }
+}
 
-    new_section \@main => 'link';
+
+sub section_link {
+    my ($self,$main , $filelist) = @_;
+    new_section $main => 'link';
     while( my ($src,$target) = each %$filelist ) {
-        add_st \@main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
+        add_st $main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
-
-    new_section \@main => 'link-force';
+    new_section $main => 'link-force';
     while( my ($src,$target) = each %$filelist ) {
-        add_st \@main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
+        add_st $main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
     }
-
-    new_section \@main => 'manifest';
-    add_st \@main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Manifest=mkmanifest -e 'mkmanifest'|;
-    add_st \@main => q|$(NOECHO) $(TOUCH) MANIFEST.SKIP|;
-
-    new_section \@main => 'dist';
-    add_st \@main => q|$(TAR) $(TARFLAGS) $(DISTNAME).tar.gz $(TO_INST_VIMS)|;
-	add_noop_st \@main;
-
-    new_section \@main => 'help';
-    add_st \@main => q|perldoc VIM::Packager|;
-
-    new_section \@main => 'uninstall';
-    for( values %$filelist ) {
-        add_st \@main => q|$(RM_F) | . $_ ;
-    }
-
-    # XXX: prompt user to uninstall depedencies
-
-    new_section \@main => 'upload' , qw(dist);
-    add_st \@main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Uploader=upload -e 'upload()' |
-                . multi_line qw|$(PWD)/$(DISTNAME).tar.gz $(VIM_VERSION) $(VERSION) $(SCRIPT_ID)|;
-
-    new_section \@main => 'clean';
-    add_st \@main      => multi_line q|$(RM)|,
-            qw(pure_install install-deps);
-    add_st \@main => q|$(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD)|;
-
-
-    $self->generate_makefile( [
-            { meta   => \@meta_section },
-            { config => \@config_section },
-            { file   => \@file_section },
-            { main   => \@main } ] );
 }
 
 

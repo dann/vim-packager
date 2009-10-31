@@ -11,7 +11,6 @@ use LWP::UserAgent;
 our @EXPORT = ();
 our @EXPORT_OK = qw(install_deps install install_deps_remote);
 
-
 # FIXME:  install deps from vim script archive network.
 
 sub install_deps {
@@ -81,6 +80,7 @@ sub install_deps_remote {
             print $response->status_line;
         }
 
+        # XXX: try to get the last modified time
 
         # if target exists , then we should do a diff
         if ( $content and -e $target ) {
