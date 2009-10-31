@@ -146,7 +146,6 @@ sub new {
         add_st \@main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install_deps  |
                 . qq| -e 'install_deps()' '@{[ join ",",@pkgs_version ]}' |;
     }
-    add_st \@main , q|$(NOECHO) $(TOUCH) install-deps|; # XXX: cur base path
 
     new_section \@main => 'link';
     while( my ($src,$target) = each %$filelist ) {
