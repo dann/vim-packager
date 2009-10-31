@@ -1,6 +1,7 @@
 package VIM::Packager::Command::Init;
 use warnings;
 use strict;
+use File::Path;
 use base qw(App::CLI::Command);
 
 sub options {
@@ -15,6 +16,14 @@ sub options {
 
 sub run {
     my ( $self, @args ) = @_;
+
+
+    # create dir skeleton 
+    File::Path::mkpath [
+        'vimlib/plugin'
+
+        qw(plugin )
+    ];
 
     # create meta file skeleton
 

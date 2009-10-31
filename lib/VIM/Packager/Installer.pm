@@ -51,6 +51,7 @@ sub install_deps_remote {
         # XXX: we might need to expand Makefile macro to support such things like:
         #    $(VIM_BASEDIR)/path/to/
         # see VIM::Packager::MakeMaker
+        # XXX: we should compare the installed file and the downloaded file.
         $target = File::Spec->join( vim_rtp_home() , $target );
 
         print "Downloading $from " ;
