@@ -6,6 +6,7 @@ use File::Path;
 use File::Copy;
 use Exporter::Lite;
 use VIM::Packager::Utils qw(vim_rtp_home vim_inst_record_dir findbin);
+use LWP::UserAgent;
 
 our @EXPORT = ();
 our @EXPORT_OK = qw(install_deps install install_deps_remote);
@@ -39,7 +40,6 @@ sub install_deps {
 
 our $VERBOSE = $ENV{VERBOSE} ? 1 : 0;
 
-use LWP::UserAgent;
 sub install_deps_remote {
     my $package_name = shift @ARGV;
     my %install = @ARGV;
@@ -127,9 +127,10 @@ sub install_deps_remote {
 
 sub prompt_for_different {
     my $target = shift;
-    print "Can not find your installed script version. instead , we found the installed script.\n";
-    print "Your installed $target is different from which you just downloaded.\n";
-    print "(Replace / Diff / Merge / Skip) it ? (r/d/m/s) ";
+    print "Installed script version not found. instead , we found the installed script file.\n";
+    print "The installed vim script file is different from which you just downloaded.\n";
+    print "Which is: $target.\n";
+    print "(Replace / Diff / Merge / Skip) it with the remote one ? (r/d/m/s) ";
     my $ans = <STDIN>;
     chomp $ans;
     return $ans;
