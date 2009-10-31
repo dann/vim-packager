@@ -88,10 +88,17 @@ sub install {
     while( my ($from,$to) = each %install_to ){
         my ( $v, $dir, $file ) = File::Spec->splitpath($to);
 
-        # XXX: compare modified time
+
         File::Path::mkpath [ $dir ] unless -e $dir ;
-        File::Copy::copy( $from , $to );
-        print STDOUT "Installing $from => $to \n";
+
+        my ($mtime_to ) = (stat($to))[9];
+        my ($mtime_from ) = (stat($from))[9];
+
+        if ( $mtime_from > $mtime_to ) {
+            File::Copy::copy( $from , $to );
+            print STDOUT "Installing $from => $to \n";
+        }
+
     }
 
     # XXX: update doc tags
