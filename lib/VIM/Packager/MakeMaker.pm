@@ -94,7 +94,7 @@ sub new {
         check_manifest();
     }
 
-    my $main =  [ ];
+    my $main = [ ];
 
     push @$main, q|.PHONY: all install clean uninstall help upload link|;
     
@@ -113,7 +113,9 @@ sub new {
 
     # dependency section
     $self->section_deps( $main );
-    $self->section_link( $filelist );
+    $self->section_link( $main , $filelist );
+
+    # -----------
 
     new_section $main => 'manifest';
     add_st $main => q|$(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Manifest=mkmanifest -e 'mkmanifest'|;
@@ -247,7 +249,6 @@ END
     }
     close $fh;
     print "DONE\n";
-
 }
 
 
@@ -257,7 +258,7 @@ sub meta_section {
     my @section = ();
     map { add_macro \@section, uc($_) => $meta->{$_} } grep { ! ref $meta->{$_} } keys %$meta;
 
-    my $distname  = $meta->{name};
+    my $distname = $meta->{name};
     $distname =~ tr/._/--/;
     $distname .= '-' . $meta->{version};
     add_macro \@section , DISTNAME => $distname;
@@ -398,7 +399,7 @@ sub check_dependency {
             }
         }
         else {
-            # we can not detect installed package version
+            # if we can not detect installed package version
             # here is the other way to install dependencies.
             my ( $prereq , $require_files ) = ( $dep->{name}  , $dep->{required_files} );
             $unsatisfied{ $prereq } = $require_files; 
