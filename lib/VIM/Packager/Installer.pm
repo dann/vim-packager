@@ -87,6 +87,8 @@ sub install {
 
     while( my ($from,$to) = each %install_to ){
         my ( $v, $dir, $file ) = File::Spec->splitpath($to);
+
+        # XXX: compare modified time
         File::Path::mkpath [ $dir ] unless -e $dir ;
         File::Copy::copy( $from , $to );
         print STDOUT "Installing $from => $to \n";
