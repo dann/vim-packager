@@ -45,6 +45,7 @@ sub install_deps_remote {
     my %install = @ARGV;
 
     print sprintf( "Installing dependencies: %s\n",  $package_name);
+
     $|++;
     while( my ($target,$from) = each %install ) {
 
@@ -101,9 +102,7 @@ sub install {
         }
         else {
             print STDOUT "Skip $from\n";
-
         }
-
     }
 
     # XXX: update doc tags
