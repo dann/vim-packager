@@ -88,15 +88,20 @@ sub install {
     while( my ($from,$to) = each %install_to ){
         my ( $v, $dir, $file ) = File::Spec->splitpath($to);
 
+        print("$from doesnt exist.\n"),next unless -e $from;
 
         File::Path::mkpath [ $dir ] unless -e $dir ;
 
-        my ($mtime_to ) = (stat($to))[9];
-        my ($mtime_from ) = (stat($from))[9];
+        my $mtime_to = (stat($to))[9];
+        my $mtime_from = (stat($from))[9];
 
         if ( $mtime_from > $mtime_to ) {
             File::Copy::copy( $from , $to );
             print STDOUT "Installing $from => $to \n";
+        }
+        else {
+            print STDOUT "Skip $from\n";
+
         }
 
     }
