@@ -64,16 +64,21 @@ sub install_deps_remote {
             File::Path::mkpath [ $dir ] unless -e $dir;
         }
 
-        my $ret = LWP::Simple::getstore( $from , $target );
+        my $ua = LWP::UserAgent->new;
+        $ua->timeout( 10 );
+        $ua->env_proxy();
 
-        if( $ret eq '200' ) {
+        my $response = $ua->get( $from );
+        if( $response->is_success ) {
+            my $content = $response->decoded_content;
+            open FH , ">" , $target;
+            print FH $content;
+            close FH;
             print "[ OK ]\n";
         }
-        elsif( $ret eq '404' ) {
-            print "[ FAIL: No such file ]\n";
-        }
         else {
-            print "[ FAIL: Unknown error $ret ]\n";
+            print "[ FAIL ]\n";
+            print $response->status_line;
         }
     }
 
