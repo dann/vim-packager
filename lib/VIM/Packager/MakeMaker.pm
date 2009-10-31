@@ -48,7 +48,7 @@ sub add_macro  {
 sub new_section {
     my $ref = shift;
     my ( $name , @deps ) = @_;
-    push @{ $ref } , qq|$name : | . join( " ", @deps );
+    push @{ $ref } , qq|| , qq|$name : | . join( " ", @deps );
 }
 
 sub add_st {
