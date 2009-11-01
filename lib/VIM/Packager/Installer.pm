@@ -182,7 +182,6 @@ sub install {
 
     # XXX: we should check more details on those files which are going to be
     #      installed.
-
     while( my ($from,$to) = each %install_to ){
         my ( $v, $dir, $file ) = File::Spec->splitpath($to);
 
@@ -204,7 +203,9 @@ sub install {
 
     # make installation record
     my $meta = VIM::Packager::MetaReader->new->read_metafile();
-
+    my $files = values %install_to;
+    my $record_basepath = $ENV{VIMPKG_RECORDDIR} 
+                            || File::Spec->join($ENV{HOME},'.vim','record');
 
     # XXX: update doc tags
 
