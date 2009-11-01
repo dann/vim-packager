@@ -37,7 +37,18 @@ sub install_deps {
 
 }
 
+
 our $VERBOSE = $ENV{VERBOSE} ? 1 : 0;
+
+
+sub mk_record {
+    my $pkgname = shift;
+    my $version = shift;
+    my $filelist = shift;
+
+
+
+}
 
 sub install_deps_remote {
     my $package_name = shift @ARGV;

@@ -4,21 +4,33 @@ use strict;
 
 use YAML;
 
-my @possible_filename = qw( 
-    VIMMETA
-    VIMMETA.yml
-);
+use constant META_FILES => ['VIMMETA','META','VIMMETA.yml'];
 
 sub new { bless {} , shift }
 
 sub meta { my $self = shift; return $self->{meta} ||= {}; }
 
-sub get_meta_file {
-    for my $f ( @possible_filename ) {
-        return $f if( -e  $f );
-    }
-    return undef;
+sub read_metafile {
+    my $self = shift;
+    # read meta_reader file
+
+    my $file = $self->find_meta_file();
+    die 'Can not found META file' unless -e $file;
+
+    open my $fh , "<" , $file ;
+    $self->read( $fh );
+    close $fh;
+
+    return $self->meta;
 }
+
+sub find_meta_file {
+    my $files = META_FILES;
+    for ( @$files ) {
+        return $_ if -e $_;
+    }
+}
+
 
 =pod Generic VIM Meta file format
 

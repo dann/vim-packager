@@ -15,7 +15,6 @@ my  $VERBOSE = 1;
 
 use constant {
     LIB  => 'vimlib',
-    META_FILES => ['VIMMETA','META','VIMMETA.yml'],
 };
 
 =head1 SYNOPSIS
@@ -27,12 +26,6 @@ use constant {
 
 =cut
 
-sub find_meta_file {
-    my $files = META_FILES;
-    for ( @$files ) {
-        return $_ if -e $_;
-    }
-}
 
 sub multi_line {
     my @items = @_;
@@ -69,7 +62,9 @@ sub add_noop_st {
 
 sub new { 
     my $self = bless {},shift;
-    my $meta = $self->init_meta();
+    my $meta = VIM::Packager::MetaReader->new->read_metafile();
+
+    YAML::DumpFile( "VIMMETA.yml" , $meta );
 
     $self->meta( $meta ); # save meta object
 
@@ -321,7 +316,7 @@ sub file_section {
     my @to_install = keys %$filelist;
 
     add_macro \@section , VIMLIB => LIB;
-    add_macro \@section , VIMMETA => find_meta_file();
+    add_macro \@section , VIMMETA => VIM::Packager::MetaReader::find_meta_file();
 
     add_macro \@section , TO_INST_VIMS => multi_line @to_install ;
 
@@ -543,24 +538,6 @@ sub vim_version_info {
         patch_to    => $patch_to,
         compiled_by => $compiled_by
     };
-}
-
-sub init_meta {
-    my $self = shift;
-    # read meta_reader file
-    my $meta_reader = VIM::Packager::MetaReader->new;
-
-    # my $file = $meta_reader->get_meta_file();
-    my $file = find_meta_file();
-    die 'Can not found META file' unless -e $file;
-
-    open my $fh , "<" , $file ;
-    $meta_reader->read( $fh );
-    close $fh;
-
-    YAML::DumpFile( "VIMMETA.yml" , $meta_reader->meta );
-
-    return $meta_reader->meta;
 }
 
 sub check_manifest {
