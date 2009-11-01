@@ -21,7 +21,7 @@ our $VERSION = '0.05';
 
 =head1 DESCRIPTION
 
-** TESTING **
+
 
 =head1 FUNCTIONS
 

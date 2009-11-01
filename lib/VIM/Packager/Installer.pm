@@ -205,14 +205,15 @@ sub install {
     # make installation record
     my $meta = VIM::Packager::MetaReader->new->read_metafile();
     my $files = values %install_to;
-    my $record_basepath = $ENV{VIMPKG_RECORDDIR} 
-                            || File::Spec->join($ENV{HOME},'.vim','record');
+    my $record_basepath = 
 
-    my $record_name = $meta->{name};
-    my $version     = $meta->{version};
-
-    my my $f = File::Spec->join( $record_basepath  , $record_name );
-    YAML::DumpFile($f, { meta => $meta , files => $files } );
+    YAML::DumpFile( File::Spec->join( 
+        ( $ENV{VIMPKG_RECORDDIR} || File::Spec->join($ENV{HOME},'.vim','record') ),
+        $record_basepath  , $meta->{name} 
+      ) , { 
+        meta => $meta, 
+        files => $files 
+    } );
 
     # XXX: update doc tags
 }
