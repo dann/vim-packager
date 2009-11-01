@@ -46,8 +46,6 @@ sub mk_record {
     my $version = shift;
     my $filelist = shift;
 
-
-
 }
 
 sub install_deps_remote {
@@ -184,7 +182,6 @@ sub install {
 
     # XXX: we should check more details on those files which are going to be
     #      installed.
-    # XXX: make installation record
 
     while( my ($from,$to) = each %install_to ){
         my ( $v, $dir, $file ) = File::Spec->splitpath($to);
@@ -205,7 +202,13 @@ sub install {
         }
     }
 
+    # make installation record
+    my $meta = VIM::Packager::MetaReader->new->read_metafile();
+
+
     # XXX: update doc tags
+
+
 }
 
 1;

@@ -14,7 +14,7 @@ our $VERSION = 0.0.1;
 my  $VERBOSE = 1;
 
 use constant {
-    LIB  => 'vimlib',
+    LIBPATH  => 'vimlib',
 };
 
 =head1 SYNOPSIS
@@ -315,7 +315,7 @@ sub file_section {
 
     my @to_install = keys %$filelist;
 
-    add_macro \@section , VIMLIB => LIB;
+    add_macro \@section , VIMLIB => LIBPATH;
     add_macro \@section , VIMMETA => VIM::Packager::MetaReader::find_meta_file();
 
     add_macro \@section , TO_INST_VIMS => multi_line @to_install ;
@@ -446,7 +446,7 @@ sub make_filelist {
     my $self = shift;
 
     my %install = ();
-    my $base_prefix = LIB;
+    my $base_prefix = LIBPATH;
 
     # my $prefix = File::Spec->join($ENV{HOME} , '.vim');
     my $prefix = '$(VIM_BASEDIR)';
