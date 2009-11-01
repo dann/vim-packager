@@ -5,6 +5,7 @@ use File::Spec;
 use File::Path;
 use File::Copy;
 use Exporter::Lite;
+use YAML;
 use VIM::Packager::Utils qw(vim_rtp_home vim_inst_record_dir findbin);
 use LWP::UserAgent;
 
@@ -207,9 +208,13 @@ sub install {
     my $record_basepath = $ENV{VIMPKG_RECORDDIR} 
                             || File::Spec->join($ENV{HOME},'.vim','record');
 
+    my $record_name = $meta->{name};
+    my $version     = $meta->{version};
+
+    my my $f = File::Spec->join( $record_basepath  , $record_name );
+    YAML::DumpFile($f, { meta => $meta , files => $files } );
+
     # XXX: update doc tags
-
-
 }
 
 1;
