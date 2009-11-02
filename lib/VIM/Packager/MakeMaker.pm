@@ -62,15 +62,20 @@ sub add_noop_st {
 
 sub new { 
     my $class = shift;
-    my $command = shift;  # command object
-
+    my $cmd = shift;  # command object
 
     my $self = bless {}, $class;
     my $meta = VIM::Packager::MetaReader->new->read_metafile();
 
+
+    $self->{cmd} = $cmd;
+
     YAML::DumpFile( "VIMMETA.yml" , $meta );
 
     $self->meta( $meta ); # save meta object
+
+    my $makefile = {};
+    $makefile->{meta} = $meta;
 
     {
         my $info = vim_version_info();
@@ -97,8 +102,9 @@ sub new {
 
     push @$main, q|.PHONY: all install clean uninstall help upload link|;
     
-
     my $filelist = $self->make_filelist();
+
+    $makefile->{filelist} = $filelist;
 
     my @meta_section   = $self->meta_section( $meta );
     my @config_section = $self->config_section();
@@ -108,7 +114,7 @@ sub new {
     $self->section_install( $main );
 
     # main install section
-    $self->section_pure_install( $main );
+    $self->section_pure_install( $main , $makefile );
 
     # dependency section
     $self->section_deps( $main );
@@ -139,9 +145,8 @@ sub new {
                 . multi_line qw|$(PWD)/$(DISTNAME).tar.gz $(VIM_VERSION) $(VERSION) $(SCRIPT_ID)|;
 
     new_section $main => 'clean';
-    add_st $main      => multi_line q|$(RM)|,
-            qw(pure_install install-deps);
-    add_st $main => q|$(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD)|;
+    add_st $main      => multi_line q|$(RM)|, qw(pure_install install-deps);
+    add_st $main      => q|$(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD)|;
 
 
     $self->generate_makefile( [
@@ -169,22 +174,47 @@ sub section_install {
 }
 
 sub section_pure_install {
-    my $self = shift;
-    my $main = shift;
+    my ($self,$main,$makefile) = @_;
+
     new_section $main => "pure_install";
 
-    add_st $main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
-                 . q| -e 'install()' $(VIMS_TO_RUNT) |;
-    add_st $main => q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
-                 . q| -e 'install()' $(BIN_TO_RUNT) |;
-}
+    # pure makefile option let 
+    # makefile doesnt depend on perl module.
+    if ( $self->{cmd}->{pure} ) {
+        print "Making pure makefile (not to depend on perl module)\n";
 
+        my %files = %{ $makefile->{filelist} };
+        
+        while ( my ($from,$to) = each %files ) {
+            add_st $main => sprintf( q|$(CP) %s %s| , $from , $to );
+        }
+    }
+    else {
+
+        add_st $main =>
+            q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
+            . q| -e 'install()' $(VIMS_TO_RUNT) |;
+
+        add_st $main =>
+            q|$(NOECHO) $(FULLPERL) $(PERLFLAGS) -MVIM::Packager::Installer=install|
+            . q| -e 'install()' $(BIN_TO_RUNT) |;
+    }
+}
 
 sub section_deps {
     my $self = shift;
     my $main = shift;
 
     new_section $main => "install-deps";
+
+    if( $self->{cmd}->{pure} ) {
+        print "You are making a pure makefile that doesn't depend on perl module.\n";
+        print "We are going to skip deps section.\n";
+        add_noop_st $main;
+        return;
+    }
+
+
     my %unsatisfied = $self->check_dependency( $self->meta );
     my @pkgs_nonversion = grep { ref($unsatisfied{$_}) eq 'ARRAY' } sort keys %unsatisfied;
     for my $pkgname ( @pkgs_nonversion ) {
@@ -296,6 +326,7 @@ sub config_section {
     $configs{LN_S}     ||= 'ln -sv';
     $configs{LN_SF}     ||= 'ln -svf';
     $configs{PWD}      ||= '`pwd`';
+    $configs{CP}       ||= 'cp -v';
 
     $configs{FIRST_MAKEFILE} ||= 'Makefile';
     $configs{MAKEFILE_OLD}   ||= 'Makefile.old';
