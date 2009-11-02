@@ -4,6 +4,32 @@ use strict;
 use File::Path;
 use base qw(App::CLI::Command);
 
+=head1 init
+
+=head2 SYNOPSIS
+
+    $ vim-packager init \
+            --name=ohai \
+            --type=plugin \
+            --name=Cornelius \
+            --email=cornelius.howl@gmail.com
+
+=head2 OPTIONS
+
+=for 4
+
+=item --name=[name]
+
+=item --type=[type]
+
+=item --author=[author]
+
+=item --email=[email]
+
+=back
+
+=cut
+
 sub options { (
         'n|name=s'   => 'name',
         'v|verbose'  => 'verbose',
