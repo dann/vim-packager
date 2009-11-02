@@ -17,18 +17,16 @@ sub options {
 sub run {
     my ( $self, @args ) = @_;
 
-
-    # create dir skeleton 
+    # create basic skeleton directories
     File::Path::mkpath [
-        'vimlib/plugin'
-
-        qw(plugin )
+        map { File::Spec->join( 'vimlib' , $_ ) }  
+                qw(plugin syntax doc ftdetect ftplugin)
     ];
 
     # create meta file skeleton
 
     # XXX: 
-    open FH, ">", "VIMMETA";
+    open FH, ">", "META";
     print FH <<END;
 
 =name           [Name]
@@ -51,7 +49,7 @@ sub run {
 
 =script
 
-# not implmeneted yet
+    # your script files here
 
 =repository git://....../
 

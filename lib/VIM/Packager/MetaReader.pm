@@ -4,7 +4,7 @@ use strict;
 
 use YAML;
 
-use constant META_FILES => ['VIMMETA','META','VIMMETA.yml'];
+use constant META_FILES => [ 'VIMMETA','META','VIMMETA.yml'];
 
 sub new { bless {} , shift }
 
