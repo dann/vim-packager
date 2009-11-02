@@ -4,15 +4,13 @@ use strict;
 use File::Path;
 use base qw(App::CLI::Command);
 
-sub options {
-    (
-        'n|name'    => 'naame',
-        'v|verbose' => 'verbose',
-        't|type'    => 'type',
-        'a|author'  => 'author',
-        'e|email'   => 'email',
-    );
-}
+sub options { (
+        'n|name=s'   => 'name',
+        'v|verbose'  => 'verbose',
+        't|type=s'   => 'type',
+        'a|author=s' => 'author',
+        'e|email=s'  => 'email',
+) }
 
 sub run {
     my ( $self, @args ) = @_;
@@ -22,12 +20,48 @@ sub run {
         return;
     }
 
-    # create basic skeleton directories
+
     print "Creating Directories.\n";
-    File::Path::mkpath [
-        map { File::Spec->join( 'vimlib' , $_ ) }  
-                qw(plugin syntax doc ftdetect ftplugin)
-    ];
+    # if we get type
+    if( $self->{type} ) {
+        if ( $self->{type} eq 'syntax' ) {
+            File::Path::mkpath [
+                map { File::Spec->join( 'vimlib' , $_ ) }  
+                        qw(syntax indent)
+            ],1;
+        }
+        elsif( $self->{type} eq 'colors' ) {
+            File::Path::mkpath [
+                map { File::Spec->join( 'vimlib' , $_ ) }  
+                        qw(colors)
+            ],1;
+        }
+        elsif( $self->{type} eq 'plugin' ) {
+            File::Path::mkpath [
+                map { File::Spec->join( 'vimlib' , $_ ) }  
+                        qw(plugin doc autoload)
+            ],1;
+        }
+        elsif( $self->{type} eq 'ftplugin' ) {
+            File::Path::mkpath [
+                map { File::Spec->join( 'vimlib' , $_ ) }  
+                        qw(ftplugin doc autoload)
+            ],1;
+        }
+    }
+    else {
+        # create basic skeleton directories
+        File::Path::mkpath [
+            map { File::Spec->join( 'vimlib' , $_ ) }  
+                    qw(autoload plugin syntax doc ftdetect ftplugin)
+        ],1;
+    }
+
+    # if we have doc directory , create a basic doc skeleton
+    if( -e File::Spec->join('vimlib' , 'doc') ) {
+
+
+    }
 
 
     print "Writing META.\n";
@@ -35,7 +69,7 @@ sub run {
     open FH, ">", "META";
     print FH <<END;
 
-=name           @{[  $self->{name} ]}
+=name           @{[ $self->{name} ]}
 
 =author         @{[ $self->{author} ]}
 
@@ -45,7 +79,7 @@ sub run {
 
 =vim_version    >= 7.2
 
-=type           @{[ $self->{type} ]}
+=type           @{[ $self->{type} || '[ script type ]' ]}
 
 =dependency
 
