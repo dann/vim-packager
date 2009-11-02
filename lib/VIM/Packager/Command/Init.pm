@@ -2,6 +2,7 @@ package VIM::Packager::Command::Init;
 use warnings;
 use strict;
 use File::Path;
+use DateTime;
 use base qw(App::CLI::Command);
 
 =head1 init
@@ -87,6 +88,7 @@ sub run {
     if( -e File::Spec->join('vimlib' , 'doc') ) {
 
 
+
     }
 
     # create meta file skeleton
@@ -114,6 +116,43 @@ sub run {
 
 END
     close FH;
+
+}
+
+
+
+sub create_doc_skeleton {
+    my $name = shift;
+
+    open DOC , ">" , File::Spec->join( 'vimlib', 'doc' , "$name.txt" );
+    print DOC <<END;
+
+    *$name.txt*  Plugin for .... 
+
+$name                                       *$name* 
+Last Change: @{[ DateTime->now ]}
+
+|$name-description|   Description
+|$name-syntax|        Syntax
+|$name-usage|         Usage
+|$name-settings|      Settings
+|$name-features|      Features
+|$name-contact|       Contact
+
+For Vim version 7.0 or later.
+This plugin only works if 'compatible' is not set.
+{Vi does not have any of these features.}
+
+==============================================================================
+DESCRIPTION                                             *$name-description*
+
+    Your Description here....
+
+==============================================================================
+END
+        close DOC;
+
+
 
 
 
