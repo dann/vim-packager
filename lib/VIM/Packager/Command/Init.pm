@@ -17,12 +17,18 @@ sub options {
 sub run {
     my ( $self, @args ) = @_;
 
+    unless($self->{name} and $self->{author} and $self->{email}) {
+        print "Please specify --name, --author, --email\n";
+        return;
+    }
+
     # create basic skeleton directories
     print "Creating Directories.\n";
     File::Path::mkpath [
         map { File::Spec->join( 'vimlib' , $_ ) }  
                 qw(plugin syntax doc ftdetect ftplugin)
     ];
+
 
     print "Writing META.\n";
     # create meta file skeleton
