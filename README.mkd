@@ -46,7 +46,7 @@ for some reason , you want the scripts be linked to your vim runtime path.
 
 ### To upload to vim.org
 
-you need to specify script\_id in your meta file ( VIMMETA ).
+you need to specify script\_id in your meta file ( VIMMETA or META ).
 
 then run vim-packager build to get your Makefile. then type command below to
 upload your distribution:
@@ -93,7 +93,7 @@ to create package tarball file:
     new_plugin/
     new_plugin/vimlib/plugin/
     new_plugin/vimlib/doc/
-    new_plugin/vimlib/META
+    new_plugin/vimlib/VIMMETA
 
 fill your 'VIMMETA' file
 
