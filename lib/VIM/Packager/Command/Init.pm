@@ -19,25 +19,30 @@ use base qw(App::CLI::Command);
 
 =over 4
 
-=item --name=[name]
+=item --name=[name]  | -n
 
-=item --type=[type]
+=item --type=[type]  | -t
 
-=item --author=[author]
+=item --author=[author]  | -a
 
-=item --email=[email]
+=item --email=[email]  | -e
+
+=item --no-migrate | -nm
 
 =back
 
 =cut
 
-sub options { (
-        'n|name=s'   => 'name',
-        'v|verbose'  => 'verbose',
-        't|type=s'   => 'type',
-        'a|author=s' => 'author',
-        'e|email=s'  => 'email',
-) }
+sub options {
+    (
+        'n|name=s'      => 'name',
+        'v|verbose'     => 'verbose',
+        'nm|no-migrate' => 'no_migrate',
+        't|type=s'      => 'type',
+        'a|author=s'    => 'author',
+        'e|email=s'     => 'email',
+    );
+}
 
 sub run {
     my ( $self, @args ) = @_;
@@ -46,7 +51,21 @@ sub run {
         return;
     }
 
-    $self->create_dir_skeleton();
+    # migrate dirs
+    unless( $self->{no_mirgate} ) {
+        File::Path::mkpath [ 'vimlib' ];
+        my @known_dir_names = qw(autoload indent syntax colors doc plugin ftplugin after ftdetect);
+        for ( @known_dir_names ) {
+            if( -e $_ ) {
+                print "$_ directory found , mv $_ into vimlib/ \n";
+                rename $_ , File::Spec->join( 'vimlib', $_ );
+            }
+        }
+    }
+    else {
+        $self->create_dir_skeleton();
+    }
+
 
     # if we have doc directory , create a basic doc skeleton
     $self->create_doc_skeleton() if( -e File::Spec->join('vimlib' , 'doc') );
