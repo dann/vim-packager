@@ -16,7 +16,7 @@ use base qw(App::CLI::Command);
 
 =head2 OPTIONS
 
-=for 4
+=over 4
 
 =item --name=[name]
 
@@ -89,37 +89,33 @@ sub run {
 
     }
 
-
     print "Writing META.\n";
     # create meta file skeleton
     open FH, ">", "META";
+    print FH "=name   " . $self->{name} . "\n";
+    print FH "=author " . $self->{author} . "\n";
+    print FH "=email  " . $self->{email} . "\n";
+    print FH "=type   " . $self->{type}  . "\n";
+
     print FH <<END;
-
-=name           @{[ $self->{name} ]}
-
-=author         @{[ $self->{author} ]}
-
-=email          @{[ $self->{email} ]}
-
-=version_from   [File]
-
-=vim_version    >= 7.2
-
-=type           @{[ $self->{type} || '[ script type ]' ]}
-
-=dependency
+\n=name           @{[ $self->{name} ]}
+\n=author         @{[ $self->{author} ]}
+\n=email          @{[ $self->{email} ]}
+\n=type           @{[ $self->{type} || '[ script type ]' ]}
+\n=version_from   [File]
+\n=vim_version    >= 7.2
+\n=dependency
 
     [name] >= [version]
 
     [name]
         | autoload/libperl.vim | http://github.com/c9s/libperl.vim/raw/master/autoload/libperl.vim
         | plugin/yours.vim | http://ohlalallala.com/yours.vim
-
-=script
+\n=script
 
     # your script files here
 
-=repository git://....../
+\n=repository git://....../
 
 END
     close FH;
