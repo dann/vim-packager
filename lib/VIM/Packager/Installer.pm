@@ -205,11 +205,10 @@ sub install {
     # make installation record
     my $meta = VIM::Packager::MetaReader->new->read_metafile();
     my $files = values %install_to;
-    my $record_basepath = 
 
     YAML::DumpFile( File::Spec->join( 
         ( $ENV{VIMPKG_RECORDDIR} || File::Spec->join($ENV{HOME},'.vim','record') ),
-        $record_basepath  , $meta->{name} 
+        $meta->{name} 
       ) , { 
         meta => $meta, 
         files => $files 
