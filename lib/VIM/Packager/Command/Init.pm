@@ -57,14 +57,13 @@ sub run {
         my @known_dir_names = qw(autoload indent syntax colors doc plugin ftplugin after ftdetect);
         for ( @known_dir_names ) {
             if( -e $_ ) {
-                print "$_ directory found , mv $_ into vimlib/ \n";
+                print "$_ directory found , migrate $_ into vimlib/ \n";
                 rename $_ , File::Spec->join( 'vimlib', $_ );
             }
         }
     }
-    else {
-        $self->create_dir_skeleton();
-    }
+
+    $self->create_dir_skeleton();
 
     # if we have doc directory , create a basic doc skeleton
     $self->create_doc_skeleton() if( -e File::Spec->join('vimlib' , 'doc') );
