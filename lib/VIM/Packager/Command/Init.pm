@@ -78,7 +78,7 @@ sub create_readme_skeleton {
     my $self = shift;
     my $cmd = shift;
     
-    print "creating README\n";
+    print "Creating README\n";
 
     open README , ">" , "README";
     print README ""; # XXX
