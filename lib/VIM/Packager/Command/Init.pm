@@ -47,24 +47,21 @@ sub run {
         return;
     }
 
-
-    print "Creating Directories.\n";
-    create_dir_skeleton( $self->{type} );
+    $self->create_dir_skeleton();
 
     # if we have doc directory , create a basic doc skeleton
-    create_doc_skeleton( $self->{name} ) 
-        if( -e File::Spec->join('vimlib' , 'doc') );
+    $self->create_doc_skeleton() if( -e File::Spec->join('vimlib' , 'doc') );
 
     # create meta file skeleton
-    print "Writing META.\n";
     $self->create_meta_skeleton( );
 
 }
 
-
-
 sub create_doc_skeleton {
-    my $name = shift;
+    my $self = shift;
+    my $name = $self->{name};
+
+    print "Creating doc skeleton.\n";
 
     open DOC , ">" , File::Spec->join( 'vimlib', 'doc' , "$name.txt" );
     print DOC <<END;
@@ -95,10 +92,11 @@ END
         close DOC;
 }
 
-
 sub create_dir_skeleton {
-    my $type = shift;
+    my $self = shift;
+    my $type = $self->{type};
 
+    print "Creating directories.\n";
     # if we get type
     if( $type ) {
         if ( $type eq 'syntax' ) {
@@ -136,9 +134,10 @@ sub create_dir_skeleton {
 
 }
 
-
 sub create_meta_skeleton {
     my $self = shift;
+
+    print "Writing META.\n";
 
     open FH, ">", "META";
     print FH <<END;
@@ -165,7 +164,5 @@ END
     close FH;
 
 }
-
-
 
 1;
