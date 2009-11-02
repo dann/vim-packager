@@ -70,6 +70,20 @@ sub run {
 
     # create meta file skeleton
     $self->create_meta_skeleton( );
+
+    $self->create_readme_skeleton();
+}
+
+sub create_readme_skeleton {
+    my $self = shift;
+    my $cmd = shift;
+    
+    print "creating README\n";
+
+    open README , ">" , "README";
+    print README ""; # XXX
+    close README;
+
 }
 
 sub create_doc_skeleton {
