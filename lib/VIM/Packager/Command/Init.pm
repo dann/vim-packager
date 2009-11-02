@@ -27,7 +27,7 @@ use base qw(App::CLI::Command);
 
 =item --email=[email]  | -e
 
-=item --no-migrate | -nm
+=item --no-migration | -nm
 
 =back
 
@@ -37,7 +37,7 @@ sub options {
     (
         'n|name=s'      => 'name',
         'v|verbose'     => 'verbose',
-        'nm|no-migrate' => 'no_migrate',
+        'nm|no-migration' => 'no_migration',
         't|type=s'      => 'type',
         'a|author=s'    => 'author',
         'e|email=s'     => 'email',
@@ -52,7 +52,7 @@ sub run {
     }
 
     # migrate dirs
-    unless( $self->{no_mirgate} ) {
+    unless( $self->{no_migration} ) {
         File::Path::mkpath [ 'vimlib' ];
         my @known_dir_names = qw(autoload indent syntax colors doc plugin ftplugin after ftdetect);
         for ( @known_dir_names ) {
@@ -65,7 +65,6 @@ sub run {
     else {
         $self->create_dir_skeleton();
     }
-
 
     # if we have doc directory , create a basic doc skeleton
     $self->create_doc_skeleton() if( -e File::Spec->join('vimlib' , 'doc') );

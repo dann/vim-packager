@@ -180,23 +180,24 @@ FOR AN EXISTED VIM DISTRIBUTION
         doc/
         README
 
-    $ vim-packager init --name=your_plugin --author=your_name --email=your@email.com --type=plugin
+    $ vim-packager init \
+        --name=your_plugin \
+        --author=your_name \
+        --email=your@email.com \
+        --type=plugin
 
         # --type is optional
 
 which generates
 
-        META
+        VIMMETA
         MANIFEST
         .IGNORE
         vimlib/....
 
-name from parent directory name
-version (should try to parse \*.vim files)
-author  (should try to parse \*.vim files)
-dependency (user should define it by self)
+and mv your vim directories into vimlib/ , if you dont want this then specify `--no-migration`
 
-your should update your package information from META file
+your should update your package information in VIMMETA file
 
     $ vim-packager build 
 
