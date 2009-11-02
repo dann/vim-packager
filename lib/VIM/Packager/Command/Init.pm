@@ -89,14 +89,9 @@ sub run {
 
     }
 
-    print "Writing META.\n";
     # create meta file skeleton
+    print "Writing META.\n";
     open FH, ">", "META";
-    print FH "=name   " . $self->{name} . "\n";
-    print FH "=author " . $self->{author} . "\n";
-    print FH "=email  " . $self->{email} . "\n";
-    print FH "=type   " . $self->{type}  . "\n";
-
     print FH <<END;
 \n=name           @{[ $self->{name} ]}
 \n=author         @{[ $self->{author} ]}
