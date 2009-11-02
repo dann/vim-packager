@@ -61,7 +61,11 @@ sub add_noop_st {
 }
 
 sub new { 
-    my $self = bless {},shift;
+    my $class = shift;
+    my $command = shift;  # command object
+
+
+    my $self = bless {}, $class;
     my $meta = VIM::Packager::MetaReader->new->read_metafile();
 
     YAML::DumpFile( "VIMMETA.yml" , $meta );
