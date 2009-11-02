@@ -18,26 +18,28 @@ sub run {
     my ( $self, @args ) = @_;
 
     # create basic skeleton directories
+    print "Creating Directories.\n";
     File::Path::mkpath [
         map { File::Spec->join( 'vimlib' , $_ ) }  
                 qw(plugin syntax doc ftdetect ftplugin)
     ];
 
+    print "Writing META.\n";
     # create meta file skeleton
-
-    # XXX: 
     open FH, ">", "META";
     print FH <<END;
 
-=name           [Name]
+=name           @{[  $self->{name} ]}
 
-=author         [Author]
+=author         @{[ $self->{author} ]}
+
+=email          @{[ $self->{email} ]}
 
 =version_from   [File]
 
 =vim_version    >= 7.2
 
-=type           [TYPE]
+=type           @{[ $self->{type} ]}
 
 =dependency
 
