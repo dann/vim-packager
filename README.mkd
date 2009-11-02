@@ -180,14 +180,16 @@ FOR AN EXISTED VIM DISTRIBUTION
         doc/
         README
 
-    $ vim-packager init
+    $ vim-packager init --name=your_plugin --author=your_name --email=your@email.com --type=plugin
+
+        # --type is optional
 
 which generates
 
         META
         MANIFEST
         .IGNORE
-        vimlib/
+        vimlib/....
 
 name from parent directory name
 version (should try to parse \*.vim files)

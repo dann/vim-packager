@@ -41,7 +41,6 @@ sub options { (
 
 sub run {
     my ( $self, @args ) = @_;
-
     unless($self->{name} and $self->{author} and $self->{email}) {
         print "Please specify --name, --author, --email\n";
         return;
@@ -54,7 +53,6 @@ sub run {
 
     # create meta file skeleton
     $self->create_meta_skeleton( );
-
 }
 
 sub create_doc_skeleton {
