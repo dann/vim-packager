@@ -167,6 +167,12 @@ you can also define your 'MANIFEST.SKIP' file
         .git\*
         test-
 
+### To create a pure Makefile that doesn't depend on VIM::Packager module
+
+    $ vim-packager build --pure
+
+
+
 FOR AN EXISTED VIM DISTRIBUTION
 ===============================
 
