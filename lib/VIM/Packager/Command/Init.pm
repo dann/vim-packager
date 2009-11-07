@@ -5,6 +5,10 @@ use File::Path;
 use DateTime;
 use base qw(App::CLI::Command);
 
+=head1 NAME
+
+VIM::Packager::Command::Init - create vim package skelton
+
 =head1 init
 
 =head2 SYNOPSIS
