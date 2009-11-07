@@ -246,6 +246,11 @@ sub section_link {
     while( my ($src,$target) = each %$filelist ) {
         add_st $main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) . " " .  $target;
     }
+
+    new_section $main => 'unlink';
+    while( my ($src,$target) = each %$filelist ) {
+        add_st $main => q|$(NOECHO) $(RM) | . $target;
+    }
 }
 
 
