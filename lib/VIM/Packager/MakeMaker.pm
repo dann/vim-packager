@@ -240,11 +240,11 @@ sub section_link {
     my ($self,$main , $filelist) = @_;
     new_section $main => 'link';
     while( my ($src,$target) = each %$filelist ) {
-        add_st $main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
+        add_st $main => q|$(NOECHO) $(LN_S) | . File::Spec->join( '$(PWD)' , $src )  . " " .  $target;
     }
     new_section $main => 'link-force';
     while( my ($src,$target) = each %$filelist ) {
-        add_st $main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) .  $target;
+        add_st $main => q|$(NOECHO) $(LN_SF) | . File::Spec->join( '$(PWD)' , $src ) . " " .  $target;
     }
 }
 
