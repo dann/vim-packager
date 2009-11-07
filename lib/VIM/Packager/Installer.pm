@@ -207,8 +207,11 @@ sub install {
     my $meta = VIM::Packager::MetaReader->new->read_metafile();
     my $files = values %install_to;
 
-    YAML::DumpFile( File::Spec->join( 
-        ( $ENV{VIMPKG_RECORDDIR} || File::Spec->join($ENV{HOME},'.vim','record') ),
+    my $record_path = $ENV{VIMPKG_RECORDDIR} || File::Spec->join($ENV{HOME},'.vim','record');
+
+    mkdir $record_path unless $record_path;
+
+    YAML::DumpFile( File::Spec->join( $record_path ,
         $meta->{name} 
       ) , { 
         meta => $meta, 
