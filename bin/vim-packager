@@ -3,6 +3,11 @@ use warnings;
 use strict;
 use VIM::Packager;
 use VIM::Packager::Command;
+use Getopt::Long;
+use Pod::Usage;
+
+GetOptions( \my %opt, qw/help/);
+pod2usage(2) if $opt{help};
 
 $|++;
 my $cmd = shift @ARGV;
@@ -17,6 +22,19 @@ __END__
 
 =head1 NAME
 
+
+=head1 SYNOPSIS
+
+Do "vim-packager help" lists commands.
+Do "vim-packager help <command_name>" if you need to know the detail about command.
+
+### To install a vim package
+
+first thing, we need to translate meta file (VIMMETA) into Makefile. just type:
+
+    $ vim-packager build
+
+...
 
 =head1 USAGE
 
