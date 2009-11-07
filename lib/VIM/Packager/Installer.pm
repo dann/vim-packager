@@ -8,6 +8,7 @@ use Exporter::Lite;
 use YAML;
 use VIM::Packager::Utils qw(vim_rtp_home vim_inst_record_dir findbin);
 use LWP::UserAgent;
+use VIM::Packager::MetaReader;
 
 our @EXPORT = ();
 our @EXPORT_OK = qw(install_deps install install_deps_remote);
